@@ -1,24 +1,14 @@
-#import thư viện
-import re
-import time
-import math
-import random
-import unicodedata
-from collections import Counter, defaultdict
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
+import lib 
 
 #chuẩn hóa unicode, khoảng trắng
 #đầu vào là các câu
 def normalize_text(text): 
-    text = unicodedata.normalize("NFC", str(text)) #để chuẩn hóa nhận các token dấu thanh là 1 không phải 2 hay 3.
+    text = lib.unicodedata.normalize("NFC", str(text)) #để chuẩn hóa nhận các token dấu thanh là 1 không phải 2 hay 3.
     text = text.lower()
-    text = re.sub(r"https?://\\S+|www\\.\\S+", " URL ", text) #thấy URL thì thay bằng URL
-    text = re.sub(r"\\b\\S+@\\S+\\.\\S+\\b", " EMAIL ", text) #tương tự
-    text = re.sub(r"[^0-9a-zA-ZÀ-ỹ_\\s]", " ", text)
-    text = re.sub(r"\s+", " ", text).strip() #text nhiều khoảng trắng thì chuyển về còn 1 khoảng trắng.
+    text = lib.re.sub(r"https?://\\S+|www\\.\\S+", " URL ", text) #thấy URL thì thay bằng URL
+    text = lib.re.sub(r"\\b\\S+@\\S+\\.\\S+\\b", " EMAIL ", text) #tương tự
+    text = lib.re.sub(r"[^0-9a-zA-ZÀ-ỹ_\\s]", " ", text)
+    text = lib.re.sub(r"\s+", " ", text).strip() #text nhiều khoảng trắng thì chuyển về còn 1 khoảng trắng.
     return text
 #trả về các câu đã chuẩn hóa Unicode, khoảng trắng, chữ thường
 

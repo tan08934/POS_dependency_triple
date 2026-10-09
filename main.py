@@ -1,18 +1,16 @@
 import preprocessing as pr
-from collections import Counter
-import pandas as pd
-from IPython.display import display
+import lib 
 
 #đọc file
-df = pd.read_csv(r"C:\Users\anancs0001\OneDrive\Normalize\UDD-1.csv")
+df = lib.pd.read_csv(r"C:\Users\anancs0001\OneDrive\Normalize\UDD-1.csv")
 #lấy các cột:
 # text: văn bản
 # token
 # upros: từ loại từng token
 # head: từ mà token phụ thuộc vào
 # deprel: quan hệ cú pháp giữa token và head
-df = pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
-display(df.columns.tolist())
+df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
+lib.display(df.columns.tolist())
 # tận 20000 câu
 df = df.head(3000) # lấy mẫu nhỏ hơn
 print(df)
@@ -24,7 +22,7 @@ print(df["normalize"])
 #tokenization
 tokenized_corpus = [pr.tokenize(s) for s in df["text"]]
 
-word_freq = Counter()
+word_freq = lib.Counter()
 for sent in tokenized_corpus:
     word_freq.update(sent)
 vocab = set(word_freq) # chỉ lấy các từ vựng không lấy số lần xuất hiện
