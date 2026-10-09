@@ -1,0 +1,332 @@
+[
+  {
+    "id": 1,
+    "sentence": "Trường Đại học A triển khai chương trình AI.",
+    "type": "simple",
+    "gold_triples": [["Trường Đại học A", "triển khai", "chương trình AI"]]
+  },
+  {
+    "id": 2,
+    "sentence": "Công ty B sản xuất thiết bị y tế.",
+    "type": "simple",
+    "gold_triples": [["Công ty B", "sản xuất", "thiết bị y tế"]]
+  },
+  {
+    "id": 3,
+    "sentence": "Nhà nghiên cứu C phát minh vắc-xin mới.",
+    "type": "simple",
+    "gold_triples": [["Nhà nghiên cứu C", "phát minh", "vắc-xin mới"]]
+  },
+  {
+    "id": 4,
+    "sentence": "Chính phủ ban hành quy định mới.",
+    "type": "simple",
+    "gold_triples": [["Chính phủ", "ban hành", "quy định mới"]]
+  },
+  {
+    "id": 5,
+    "sentence": "Sinh viên hoàn thành bài tập lớn.",
+    "type": "simple",
+    "gold_triples": [["Sinh viên", "hoàn thành", "bài tập lớn"]]
+  },
+  {
+    "id": 6,
+    "sentence": "Tập đoàn X ký hợp đồng với đối tác.",
+    "type": "simple",
+    "gold_triples": [["Tập đoàn X", "ký", "hợp đồng"]]
+  },
+  {
+    "id": 7,
+    "sentence": "Bộ Y tế cảnh báo dịch bệnh.",
+    "type": "simple",
+    "gold_triples": [["Bộ Y tế", "cảnh báo", "dịch bệnh"]]
+  },
+  {
+    "id": 8,
+    "sentence": "Doanh nghiệp tổ chức hội thảo khoa học.",
+    "type": "simple",
+    "gold_triples": [["Doanh nghiệp", "tổ chức", "hội thảo khoa học"]]
+  },
+  {
+    "id": 9,
+    "sentence": "Tác giả công bố sách chuyên khảo.",
+    "type": "simple",
+    "gold_triples": [["Tác giả", "công bố", "sách chuyên khảo"]]
+  },
+  {
+    "id": 10,
+    "sentence": "Kỹ sư kiểm tra hệ thống mạng.",
+    "type": "simple",
+    "gold_triples": [["Kỹ sư", "kiểm tra", "hệ thống mạng"]]
+  },
+  {
+    "id": 11,
+    "sentence": "Công ty A không triển khai dự án B.",
+    "type": "negative",
+    "gold_triples": [["Công ty A", "không triển khai", "dự án B"]]
+  },
+  {
+    "id": 12,
+    "sentence": "Bộ Tài chính chưa phê duyệt ngân sách.",
+    "type": "negative",
+    "gold_triples": [["Bộ Tài chính", "chưa phê duyệt", "ngân sách"]]
+  },
+  {
+    "id": 13,
+    "sentence": "Bệnh viện không chấp nhận thẻ bảo hiểm cũ.",
+    "type": "negative",
+    "gold_triples": [["Bệnh viện", "không chấp nhận", "thẻ bảo hiểm cũ"]]
+  },
+  {
+    "id": 14,
+    "sentence": "Trường học không tổ chức thi học kỳ.",
+    "type": "negative",
+    "gold_triples": [["Trường học", "không tổ chức", "thi học kỳ"]]
+  },
+  {
+    "id": 15,
+    "sentence": "Hệ thống chẳng ghi nhận lỗi phần mềm.",
+    "type": "negative",
+    "gold_triples": [["Hệ thống", "chẳng ghi nhận", "lỗi phần mềm"]]
+  },
+  {
+    "id": 16,
+    "sentence": "Ngân hàng không giảm lãi suất cho vay.",
+    "type": "negative",
+    "gold_triples": [["Ngân hàng", "không giảm", "lãi suất cho vay"]]
+  },
+  {
+    "id": 17,
+    "sentence": "Hội đồng chưa công bố danh sách trúng tuyển.",
+    "type": "negative",
+    "gold_triples": [["Hội đồng", "chưa công bố", "danh sách trúng tuyển"]]
+  },
+  {
+    "id": 18,
+    "sentence": "Nhà máy không xả thải ra sông.",
+    "type": "negative",
+    "gold_triples": [["Nhà máy", "không xả thải", "ra sông"]]
+  },
+  {
+    "id": 19,
+    "sentence": "Khách hàng không thanh toán hóa đơn.",
+    "type": "negative",
+    "gold_triples": [["Khách hàng", "không thanh toán", "hóa đơn"]]
+  },
+  {
+    "id": 20,
+    "sentence": "Chuyên gia chưa xác nhận thông tin.",
+    "type": "negative",
+    "gold_triples": [["Chuyên gia", "chưa xác nhận", "thông tin"]]
+  },
+  {
+    "id": 21,
+    "sentence": "Dự án B được triển khai bởi Công ty A.",
+    "type": "passive",
+    "gold_triples": [["Công ty A", "triển khai", "Dự án B"]]
+  },
+  {
+    "id": 22,
+    "sentence": "Báo cáo khoa học được hoàn thành bởi nhóm nghiên cứu.",
+    "type": "passive",
+    "gold_triples": [["nhóm nghiên cứu", "hoàn thành", "Báo cáo khoa học"]]
+  },
+  {
+    "id": 23,
+    "sentence": "Phần mềm mới được phát triển bởi Tập đoàn Công nghệ Z.",
+    "type": "passive",
+    "gold_triples": [["Tập đoàn Công nghệ Z", "phát triển", "Phần mềm mới"]]
+  },
+  {
+    "id": 24,
+    "sentence": "Hợp đồng kinh tế được ký kết bởi hai bên.",
+    "type": "passive",
+    "gold_triples": [["hai bên", "ký kết", "Hợp đồng kinh tế"]]
+  },
+  {
+    "id": 25,
+    "sentence": "Nghị định mới được ban hành bởi Chính phủ.",
+    "type": "passive",
+    "gold_triples": [["Chính phủ", "ban hành", "Nghị định mới"]]
+  },
+  {
+    "id": 26,
+    "sentence": "Cầu Mỹ Thuận được xây dựng bởi các kỹ sư Việt Nam.",
+    "type": "passive",
+    "gold_triples": [["các kỹ sư Việt Nam", "xây dựng", "Cầu Mỹ Thuận"]]
+  },
+  {
+    "id": 27,
+    "sentence": "Kế hoạch tài chính bị bác bỏ bởi Hội đồng quản trị.",
+    "type": "passive",
+    "gold_triples": [["Hội đồng quản trị", "bác bỏ", "Kế hoạch tài chính"]]
+  },
+  {
+    "id": 28,
+    "sentence": "Thông điệp được truyền tải bởi người đại diện.",
+    "type": "passive",
+    "gold_triples": [["người đại diện", "truyền tải", "Thông điệp"]]
+  },
+  {
+    "id": 29,
+    "sentence": "Luật ngân sách được thông qua bởi Quốc hội.",
+    "type": "passive",
+    "gold_triples": [["Quốc hội", "thông qua", "Luật ngân sách"]]
+  },
+  {
+    "id": 30,
+    "sentence": "Vắc-xin mới được thử nghiệm bởi Viện Dịch tễ.",
+    "type": "passive",
+    "gold_triples": [["Viện Dịch tễ", "thử nghiệm", "Vắc-xin mới"]]
+  },
+  {
+    "id": 31,
+    "sentence": "Công ty A phát triển phần mềm và bán sản phẩm cho đối tác.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Công ty A", "phát triển", "phần mềm"],
+      ["Công ty A", "bán", "sản phẩm cho đối tác"]
+    ]
+  },
+  {
+    "id": 32,
+    "sentence": "Sinh viên nghiên cứu tài liệu và viết báo cáo.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Sinh viên", "nghiên cứu", "tài liệu"],
+      ["Sinh viên", "viết", "báo cáo"]
+    ]
+  },
+  {
+    "id": 33,
+    "sentence": "Chính phủ phê duyệt dự án và cấp ngân sách.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Chính phủ", "phê duyệt", "dự án"],
+      ["Chính phủ", "cấp", "ngân sách"]
+    ]
+  },
+  {
+    "id": 34,
+    "sentence": "Bộ Giáo dục điều chỉnh chương trình và nâng cao chất lượng.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Bộ Giáo dục", "điều chỉnh", "chương trình"],
+      ["Bộ Giáo dục", "nâng cao", "chất lượng"]
+    ]
+  },
+  {
+    "id": 35,
+    "sentence": "Bác sĩ khám bệnh và kê đơn thuốc cho bệnh nhân.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Bác sĩ", "khám", "bệnh"],
+      ["Bác sĩ", "kê", "đơn thuốc cho bệnh nhân"]
+    ]
+  },
+  {
+    "id": 36,
+    "sentence": "Doanh nghiệp mở rộng thị trường và tuyển dụng nhân sự.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Doanh nghiệp", "mở rộng", "thị trường"],
+      ["Doanh nghiệp", "tuyển dụng", "nhân sự"]
+    ]
+  },
+  {
+    "id": 37,
+    "sentence": "Chuyên gia phân tích dữ liệu và đề xuất giải pháp.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Chuyên gia", "phân tích", "dữ liệu"],
+      ["Chuyên gia", "đề xuất", "giải pháp"]
+    ]
+  },
+  {
+    "id": 38,
+    "sentence": "Tập đoàn đầu tư công nghệ và tài trợ viện nghiên cứu.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Tập đoàn", "đầu tư", "công nghệ"],
+      ["Tập đoàn", "tài trợ", "viện nghiên cứu"]
+    ]
+  },
+  {
+    "id": 39,
+    "sentence": "Cảnh sát điều tra vụ án và bắt giữ nghi phạm.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Cảnh sát", "điều tra", "vụ án"],
+      ["Cảnh sát", "bắt giữ", "nghi phạm"]
+    ]
+  },
+  {
+    "id": 40,
+    "sentence": "Nhà khoa học thu thập mẫu và phân tích ADN.",
+    "type": "multiple_verbs",
+    "gold_triples": [
+      ["Nhà khoa học", "thu thập", "mẫu"],
+      ["Nhà khoa học", "phân tích", "ADN"]
+    ]
+  },
+  {
+    "id": 41,
+    "sentence": "Trường Đại học Khoa học Tự nhiên Thành phố Hồ Chí Minh công bố điểm chuẩn.",
+    "type": "long_phrase",
+    "gold_triples": [["Trường Đại học Khoa học Tự nhiên Thành phố Hồ Chí Minh", "công bố", "điểm chuẩn"]]
+  },
+  {
+    "id": 42,
+    "sentence": "Công ty Cổ phần Công nghệ Thông tin FPT triển khai giải pháp điện toán đám mây cho ngân hàng.",
+    "type": "long_phrase",
+    "gold_triples": [["Công ty Cổ phần Công nghệ Thông tin FPT", "triển khai", "giải pháp điện toán đám mây cho ngân hàng"]]
+  },
+  {
+    "id": 43,
+    "sentence": "Viện Nghiên cứu Khoa học và Công nghệ Quốc gia phát triển hệ thống trí tuệ nhân tạo thế hệ mới.",
+    "type": "long_phrase",
+    "gold_triples": [["Viện Nghiên cứu Khoa học và Công nghệ Quốc gia", "phát triển", "hệ thống trí tuệ nhân tạo thế hệ mới"]]
+  },
+  {
+    "id": 44,
+    "sentence": "Ủy ban Nhân dân Thành phố Hà Nội phê duyệt kế hoạch quy hoạch đô thị thông minh.",
+    "type": "long_phrase",
+    "gold_triples": [["Ủy ban Nhân dân Thành phố Hà Nội", "phê duyệt", "kế hoạch quy hoạch đô thị thông minh"]]
+  },
+  {
+    "id": 45,
+    "sentence": "Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam cung cấp gói tín dụng ưu đãi cho doanh nghiệp vừa và nhỏ.",
+    "type": "long_phrase",
+    "gold_triples": [["Ngân hàng Thương mại Cổ phần Ngoại thương Việt Nam", "cung cấp", "gói tín dụng ưu đãi cho doanh nghiệp vừa và nhỏ"]]
+  },
+  {
+    "id": 46,
+    "sentence": "Trung tâm Kiểm soát Bệnh tật Quốc gia phát động chiến dịch tiêm chủng mở rộng toàn diện.",
+    "type": "long_phrase",
+    "gold_triples": [["Trung tâm Kiểm soát Bệnh tật Quốc gia", "phát động", "chiến dịch tiêm chủng mở rộng toàn diện"]]
+  },
+  {
+    "id": 47,
+    "sentence": "Hiệp hội Doanh nghiệp Điện tử Việt Nam đề xuất chính sách hỗ trợ thuế nhập khẩu linh kiện.",
+    "type": "long_phrase",
+    "gold_triples": [["Hiệp hội Doanh nghiệp Điện tử Việt Nam", "đề xuất", "chính sách hỗ trợ thuế nhập khẩu linh kiện"]]
+  },
+  {
+    "id": 48,
+    "sentence": "Tổng công ty Hàng không Việt Nam mở đường bay thẳng đến các thành phố châu Âu.",
+    "type": "long_phrase",
+    "gold_triples": [["Tổng công ty Hàng không Việt Nam", "mở", "đường bay thẳng đến các thành phố châu Âu"]]
+  },
+  {
+    "id": 49,
+    "sentence": "Ban Quản lý Dự án Đường sắt Đô thị thành lập tổ công tác kiểm tra an toàn thi công.",
+    "type": "long_phrase",
+    "gold_triples": [["Ban Quản lý Dự án Đường sắt Đô thị", "thành lập", "tổ công tác kiểm tra an toàn thi công"]]
+  },
+  {
+    "id": 50,
+    "sentence": "Hội đồng Giáo sư Nhà nước công nhận đạt tiêu chuẩn chức danh giáo sư cho 50 nhà khoa học.",
+    "type": "long_phrase",
+    "gold_triples": [["Hội đồng Giáo sư Nhà nước", "công nhận", "đạt tiêu chuẩn chức danh giáo sư cho 50 nhà khoa học"]]
+  }
+]
