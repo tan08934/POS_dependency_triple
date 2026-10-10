@@ -14,7 +14,6 @@ from IPython.display import display
 import argparse
 import csv
 import json
-import re
 import subprocess
 import ast
 from pathlib import Path
