@@ -1,4 +1,4 @@
-//nguoi 2
+#nguoi 2
 import argparse
 from pathlib import Path
 import json
