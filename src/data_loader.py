@@ -21,3 +21,5 @@ def load_data():
     # tận 20000 câu
     df = df.head(3000) # lấy mẫu nhỏ hơn
     return df
+
+

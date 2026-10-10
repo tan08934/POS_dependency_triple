@@ -1,20 +1,8 @@
 import preprocessing as pr
 import lib 
+from data_loader import load_data
 
-#đọc file
-df = lib.pd.read_csv(r"C:\Users\anancs0001\OneDrive\Normalize\UDD-1.csv")
-#lấy các cột:
-# text: văn bản
-# token
-# upros: từ loại từng token
-# head: từ mà token phụ thuộc vào
-# deprel: quan hệ cú pháp giữa token và head
-df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
-lib.display(df.columns.tolist())
-# tận 20000 câu
-df = df.head(3000) # lấy mẫu nhỏ hơn
-print(df)
-
+df = load_data()
 #chuẩn hóa
 df["normalize"] = df["text"].map(pr.normalize_text)
 print(df["normalize"])
