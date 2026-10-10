@@ -1,14 +1,14 @@
-import preprocessing as pr
+from preprocessing import normalize_text, tokenize, duplicate, del_duplicate, emptycol, del_emptycol
 import lib 
 from data_loader import load_data
 
 df = load_data()
 #chuẩn hóa
-df["normalize"] = df["text"].map(pr.normalize_text)
+df["normalize"] = df["text"].map(normalize_text)
 print(df["normalize"])
 
 #tokenization
-tokenized_corpus = [pr.tokenize(s) for s in df["text"]]
+tokenized_corpus = [tokenize(s) for s in df["text"]]
 
 word_freq = lib.Counter()
 for sent in tokenized_corpus:
@@ -21,15 +21,15 @@ print("10 từ phổ biến:", word_freq.most_common(10))
 
 #kiểm tra trùng lặp
 print("Số dòng ban đầu:",len(df))
-dup1 = pr.duplicate(df["text"]) # được một Series có giá trị Bool
-df = pr.del_duplicate(df,"text")
+dup1 = duplicate(df["text"]) # được một Series có giá trị Bool
+df = del_duplicate(df,"text")
 #kiểm tra lại lần nữa còn trùng không
 print("Kiểm tra trùng lặp sau khi đã xử lý lần 1.")
-print(pr.duplicate(df["text"]).sum())
+print(duplicate(df["text"]).sum())
 print("Đánh lại số dòng thành công, số dòng sau khi loại bỏ trùng và rỗng:",len(df))
 
 # có cột rỗng không
-empty  = pr.emptycol(df)
-df = pr.del_emptycol(df,empty)
+empty  = emptycol(df)
+df = del_emptycol(df,empty)
 
 
