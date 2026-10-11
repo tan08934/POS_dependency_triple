@@ -1,6 +1,7 @@
 from preprocessing import normalize_text, tokenize, duplicate, del_duplicate, emptycol, del_emptycol
 import lib 
 from data_loader import load_data
+from word_segmetation.scrdr_segment import segment_text
 
 df = load_data()
 #chuẩn hóa
@@ -32,4 +33,6 @@ print("Đánh lại số dòng thành công, số dòng sau khi loại bỏ trù
 empty  = emptycol(df)
 df = del_emptycol(df,empty)
 
-
+#tách từ
+df["word_segmentation"] = df["normalize"].map(segment_text)
+lib.display(df.head(10))

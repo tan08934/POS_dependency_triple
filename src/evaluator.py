@@ -2,8 +2,8 @@
 Module: evaluator.py
 Tác giả: Người 3
 Mục đích: Đánh giá hiệu năng trích xuất bộ ba (Subject, Relation, Object)
-          Tính toán Precision, Recall, F1 theo Exact Match, Partial Match, 
-          phân loại câu và phân rã các thành phần (Subject/Relation/Object).
+            Tính toán Precision, Recall, F1 theo Exact Match, Partial Match, 
+            phân loại câu và phân rã các thành phần (Subject/Relation/Object).
 """
 
 import json

@@ -12,7 +12,7 @@ def normalize_text(text):
     return text
 #trả về các câu đã chuẩn hóa Unicode, khoảng trắng, chữ thường
 
-#segemt từ token
+# tokenization
 #đầu vào là các câu
 def tokenize(text: str): 
     return normalize_text(text).split()
@@ -48,6 +48,7 @@ def emptycol(df):
         print("không có dòng nào rỗng")
     return empty_idx
 
+#xóa các dòng có cột rỗng
 def del_emptycol(df, empty_idx):
     for i in empty_idx:
         df = df.drop(index = i)
