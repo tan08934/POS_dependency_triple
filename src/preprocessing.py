@@ -7,6 +7,7 @@ def normalize_text(text):
     text = text.lower()
     text = lib.re.sub(r"https?://\\S+|www\\.\\S+", " URL ", text) #thấy URL thì thay bằng URL
     text = lib.re.sub(r"\\b\\S+@\\S+\\.\\S+\\b", " EMAIL ", text) #tương tự
+    text = lib.re.sub(r"\b(?:\d{1,2}[/-]\d{1,2}[/-]\d{2,4}|\d{4}[/-]\d{1,2}[/-]\d{1,2})\b"," DATE ",text) #nhận diện ngày tháng
     text = lib.re.sub(r"[^0-9a-zA-ZÀ-ỹ_\\s]", " ", text)
     text = lib.re.sub(r"\s+", " ", text).strip() #text nhiều khoảng trắng thì chuyển về còn 1 khoảng trắng.
     return text
