@@ -48,14 +48,6 @@ Trước khi thực hiện các lệnh, cần mở PowerShell hoặc Terminal t�
 Nếu xảy ra lỗi khi import underthesea, kiểm tra xem thư viện đã được cài đặt trong đúng môi trường Python đang chạy chương trình hay chưa.
 Nếu chương trình không khởi chạy, kiểm tra phiên bản Python, các thư viện đã cài đặt, đường dẫn mã nguồn và thông báo lỗi do chương trình cung cấp.
 
-Người 2 — Vietnamese Dependency Parsing with MaltParser
-1. Mục tiêu
-
-Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
-
-Đầu vào: Câu tiếng Việt đã được tách từ (Word Segmentation) và gán nhãn từ loại (POS Tagging) bởi Người 1.
-Đầu ra: Với mỗi từ trong câu, xác định từ chủ (head) và nhãn quan hệ phụ thuộc (dependency label).
-Định dạng đầu ra: CoNLL và JSONL để phục vụ kiểm tra, đánh giá và bàn giao kết quả cho Người 3.
 
 # Người 2 — Vietnamese Dependency Parsing with MaltParser
 
