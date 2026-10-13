@@ -1,2 +1,8 @@
 __pycache__/
 *.py[cod]
+
+tools/
+models/
+data/*.conll
+data/dependency_*
+data/evaluation.json
