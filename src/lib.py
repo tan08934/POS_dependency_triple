@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 from IPython.display import display
 from sklearn.model_selection import train_test_split
 import sklearn_crfsuite
+from sklearn.metrics import confusion_matrix
 
 import argparse
 import csv

@@ -1,4 +1,5 @@
 import lib 
+from word_segmetation.segment import segment_text
 
 #chuẩn hóa unicode, khoảng trắng
 #đầu vào là các câu
@@ -57,3 +58,13 @@ def del_emptycol(df, empty_idx):
     print("Kiểm tra số dòng có rỗng:", len(check))
     return df
 #trả về quy trình sử lý cột rỗng
+
+#hàm thả giao diện
+#đầu vào người dùng nhập vào câu
+def preprocess_data(text):
+    if isinstance(text,str) or not text.strip():
+        raise ValueError("Vui lòng nhập vào một câu tiếng Việt.")
+    normalized = normalize_text(text)
+    segmented = segment_text(normalized)
+    return segmented
+#trả về danh sách các từ tách ra từ câu
