@@ -112,30 +112,32 @@ winget install EclipseAdoptium.Temurin.21.JDK
 ```
 
 Sau khi cài đặt, hãy đóng và mở lại terminal hoặc VS Code để cập nhật môi trường. Tiếp theo, chạy lại `java -version` để xác nhận Java đã được cài đặt thành công.
-
+### 3.3. Cài Maltparser
+```bash
+curl -L -o tools/maltparser-1.9.2.zip http://maltparser.org/dist/maltparser-1.9.2.zip
+tar -xf tools/maltparser-1.9.2.zip -C tools
+```
 
 ## 4. Chạy dự đoán, kiểm tra và đánh giá
 
-### Bước 1. Chuẩn bị dữ liệu đầu vào
+### Bước 1. Tách dữ liệu
 
 ```bash
-python src/prepare_malt_input.py --input data/input_pos.csv --output data/malt_input.conll
+python src/csv_to_conll.py --input src/UDD-1.csv --outdir data
 ```
 
-### Bước 2. Chạy Dependency Parsing
+### Bước 2. Chạy huấn luyện
 
 ```bash
-python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --model models/vietnamese.mco --input data/malt_input.conll --output data/dependency_predictions.conll
+python src/train_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --train data/train.conll
 ```
 
 ### Bước 3. Kiểm tra kết quả dự đoán
 
 ```bash
+python src/prepare_malt_input.py --input data/input_pos.csv --output data/malt_input.conll
+python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --model models/vietnamese.mco --input data/malt_input.conll --output data/dependency_predictions.conll
 python src/validate_dependency.py --input data/dependency_predictions.conll
-```
-
-### Bước 4. Đánh giá mô hình
-
-```bash
 python src/evaluate_dependency.py --gold data/test.conll --pred data/dependency_predictions.conll
 ```
+
