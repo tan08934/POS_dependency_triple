@@ -61,7 +61,7 @@ Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) ti�
 
 ## 1. Mục tiêu
 
-Xây dựng bước **Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt** trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
+Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
 * **Đầu vào:** Dữ liệu tiếng Việt đã được tách từ (*Word Segmentation*) và gán nhãn từ loại (*POS Tagging*) bởi Người 1.
 * **Đầu ra:** Cây cú pháp phụ thuộc, trong đó mỗi từ được xác định từ chủ (*head*) và nhãn quan hệ phụ thuộc (*dependency label*).
@@ -112,12 +112,6 @@ winget install EclipseAdoptium.Temurin.21.JDK
 ```
 
 Sau khi cài đặt, hãy đóng và mở lại terminal hoặc VS Code để cập nhật môi trường. Tiếp theo, chạy lại `java -version` để xác nhận Java đã được cài đặt thành công.
-
-### 3.3. Thư viện Python
-
-Các script được thiết kế để sử dụng thư viện chuẩn của Python, do đó không cần cài đặt thêm package bằng `pip`, miễn là mã nguồn không sử dụng thư viện bên ngoài.
-
-**Lưu ý:** Các lệnh trong README được thực hiện từ thư mục gốc của repository để bảo đảm các đường dẫn tương đối hoạt động chính xác.
 
 
 ## 4. Chạy dự đoán, kiểm tra và đánh giá
