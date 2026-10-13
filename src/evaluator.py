@@ -1,9 +1,9 @@
 """
 Module: evaluator.py
-Tác giả: Người 3
+
 Mục đích: Đánh giá hiệu năng trích xuất bộ ba (Subject, Relation, Object)
-            Tính toán Precision, Recall, F1 theo Exact Match, Partial Match, 
-            phân loại câu và phân rã các thành phần (Subject/Relation/Object).
+          Tính toán Accuracy, Precision, Recall, F1 theo Exact Match, Partial Match, 
+          phân loại câu và phân rã các thành phần (Subject/Relation/Object).
 """
 
 import json
@@ -15,13 +15,10 @@ def load_dataset(filepath: str) -> List[Dict[str, Any]]:
     Hàm đọc file dataset kiểm thử định dạng JSON.
 
     Đầu vào:
-        filepath (str): Đường dẫn đến file .json (ví dụ: 'dataset_test.json').
+        filepath (str): Đường dẫn đến file .json (ví dụ: 'data/dataset_test.json').
 
     Đầu ra:
         List[Dict[str, Any]]: Danh sách các câu kiểm thử cùng nhãn chuẩn (gold_triples).
-
-    Giải thích:
-        Hàm mở file JSON theo UTF-8 và trả về dữ liệu danh sách dictionary.
     """
     with open(filepath, 'r', encoding='utf-8') as f:
         data = json.load(f)
@@ -78,7 +75,6 @@ def is_partial_match(gold_triple: List[str], pred_triple: List[str]) -> bool:
     g_s, g_r, g_o = [normalize_string(x) for x in gold_triple]
     p_s, p_r, p_o = [normalize_string(x) for x in pred_triple]
 
-    # Điều kiện: Quan hệ khớp một phần và Subject/Object có chứa chuỗi của nhau
     r_match = (g_r in p_r) or (p_r in g_r)
     s_match = (g_s in p_s) or (p_s in g_s)
     o_match = (g_o in p_o) or (p_o in g_o)
@@ -86,31 +82,45 @@ def is_partial_match(gold_triple: List[str], pred_triple: List[str]) -> bool:
     return r_match and s_match and o_match
 
 
-def calculate_prf1(tp: int, fp: int, fn: int) -> Dict[str, float]:
+def calculate_metrics(tp: int, fp: int, fn: int, total_sentences: int = 0, correct_sentences: int = 0) -> Dict[str, float]:
     """
-    Tính Precision, Recall, F1-score từ số lượng TP, FP, FN.
+    Tính Accuracy, Precision, Recall, F1-score từ số lượng TP, FP, FN.
 
     Đầu vào:
-        tp (int): Số lượng True Positive.
-        fp (int): Số lượng False Positive.
-        fn (int): Số lượng False Negative.
+        tp (int): Số lượng True Positive (Dự đoán đúng).
+        fp (int): Số lượng False Positive (Dự đoán thừa/sai).
+        fn (int): Số lượng False Negative (Bỏ sót).
+        total_sentences (int, optional): Tổng số câu đánh giá.
+        correct_sentences (int, optional): Số câu dự đoán chính xác toàn bộ.
 
     Đầu ra:
-        Dict[str, float]: Dictionary chứa {"precision": ..., "recall": ..., "f1": ...}.
+        Dict[str, float]: Dictionary chứa các chỉ số đã làm tròn 2 chữ số thập phân.
 
-    Giải thích:
-        Áp dụng công thức tiêu chuẩn của Information Extraction:
-        P = TP / (TP + FP), R = TP / (TP + FN), F1 = 2*P*R / (P + R).
+    Giải thích công thức:
+        - Triple Accuracy = TP / (TP + FP + FN)
+        - Precision = TP / (TP + FP)
+        - Recall = TP / (TP + FN)
+        - F1-score = 2 * P * R / (P + R)
+        - Sentence Accuracy = Correct Sentences / Total Sentences (nếu có tham số)
     """
-    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-    f1 = (2 * precision * recall) / (precision + recall) if (precision + recall) > 0 else 0.0
+    total_triples = tp + fp + fn
+    accuracy = (tp / total_triples) if total_triples > 0 else 0.0
+    precision = (tp / (tp + fp)) if (tp + fp) > 0 else 0.0
+    recall = (tp / (tp + fn)) if (tp + fn) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
 
-    return {
+    res = {
+        "accuracy": round(accuracy * 100, 2),
         "precision": round(precision * 100, 2),
         "recall": round(recall * 100, 2),
         "f1": round(f1 * 100, 2)
     }
+
+    if total_sentences > 0:
+        sent_acc = (correct_sentences / total_sentences) * 100
+        res["sentence_accuracy"] = round(sent_acc, 2)
+
+    return res
 
 
 def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = 'exact') -> Dict[str, Any]:
@@ -118,29 +128,18 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
     Hàm tổng hợp đánh giá toàn bộ hệ thống trên dataset kiểm thử.
 
     Đầu vào:
-        test_results (List[Dict[str, Any]]): Danh sách chứa các object có dạng:
-            {
-                "sentence": "...",
-                "type": "simple",
-                "gold_triples": [...],
-                "predicted_triples": [...]
-            }
-        match_mode (str): Mode so sánh, nhận 'exact' hoặc 'partial'.
+        test_results (List[Dict[str, Any]]): Danh sách chứa các câu kiểm thử và kết quả dự đoán.
+        match_mode (str): 'exact' hoặc 'partial'.
 
     Đầu ra:
-        Dict[str, Any]: Bao gồm:
-            - overall: Chỉ số P, R, F1 toàn hệ thống.
-            - by_type: Chỉ số P, R, F1 chi tiết theo từng loại câu.
-            - by_component: Đánh giá riêng Subject, Relation, Object.
-            - error_logs: Danh sách các trường hợp sai cấu trúc để phục vụ Error Analysis.
-
-    Giải thích:
-        Hàm lặp qua từng câu, so sánh predicted_triples với gold_triples, 
-        phân loại lỗi và thống kê số liệu tổng hợp.
+        Dict[str, Any]: Báo cáo tổng hợp Accuracy, Precision, Recall, F1 và danh sách câu lỗi.
     """
     match_fn = is_exact_match if match_mode == 'exact' else is_partial_match
 
     overall_tp, overall_fp, overall_fn = 0, 0, 0
+    total_sentences = len(test_results)
+    correct_sentences = 0
+
     type_stats = {}
     comp_stats = {
         "subject": {"tp": 0, "fp": 0, "fn": 0},
@@ -152,7 +151,9 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
     for item in test_results:
         sent_type = item.get("type", "unknown")
         if sent_type not in type_stats:
-            type_stats[sent_type] = {"tp": 0, "fp": 0, "fn": 0}
+            type_stats[sent_type] = {"tp": 0, "fp": 0, "fn": 0, "total_sent": 0, "correct_sent": 0}
+        
+        type_stats[sent_type]["total_sent"] += 1
 
         gold_list = item.get("gold_triples", [])
         pred_list = item.get("predicted_triples", [])
@@ -160,7 +161,6 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
         matched_gold_indices = set()
         matched_pred_indices = set()
 
-        # Tìm các cặp matched
         for p_idx, pred in enumerate(pred_list):
             for g_idx, gold in enumerate(gold_list):
                 if g_idx not in matched_gold_indices and match_fn(gold, pred):
@@ -180,26 +180,12 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
         type_stats[sent_type]["fp"] += fp
         type_stats[sent_type]["fn"] += fn
 
-        # Đánh giá riêng từng thành phần (S/R/O)
-        for pred in pred_list:
-            for gold in gold_list:
-                if normalize_string(pred[0]) == normalize_string(gold[0]):
-                    comp_stats["subject"]["tp"] += 1
-                else:
-                    comp_stats["subject"]["fp"] += 1
-
-                if normalize_string(pred[1]) == normalize_string(gold[1]):
-                    comp_stats["relation"]["tp"] += 1
-                else:
-                    comp_stats["relation"]["fp"] += 1
-
-                if normalize_string(pred[2]) == normalize_string(gold[2]):
-                    comp_stats["object"]["tp"] += 1
-                else:
-                    comp_stats["object"]["fp"] += 1
-
-        # Ghi log lỗi cấu trúc nếu có sai sót
-        if fp > 0 or fn > 0:
+        # Kiểm tra câu hoàn toàn đúng (Sentence-level Accuracy)
+        if fp == 0 and fn == 0 and tp == len(gold_list):
+            correct_sentences += 1
+            type_stats[sent_type]["correct_sent"] += 1
+        else:
+            # Ghi log lỗi nếu câu chưa hoàn hảo
             error_field = "multiple"
             if len(pred_list) > 0 and len(gold_list) > 0:
                 p_s, p_r, p_o = pred_list[0]
@@ -219,18 +205,44 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
                 "predicted": pred_list
             })
 
-    # Tổng hợp bảng chỉ số
+        # Đánh giá phân rã S / R / O
+        for pred in pred_list:
+            for gold in gold_list:
+                if normalize_string(pred[0]) == normalize_string(gold[0]):
+                    comp_stats["subject"]["tp"] += 1
+                else:
+                    comp_stats["subject"]["fp"] += 1
+
+                if normalize_string(pred[1]) == normalize_string(gold[1]):
+                    comp_stats["relation"]["tp"] += 1
+                else:
+                    comp_stats["relation"]["fp"] += 1
+
+                if normalize_string(pred[2]) == normalize_string(gold[2]):
+                    comp_stats["object"]["tp"] += 1
+                else:
+                    comp_stats["object"]["fp"] += 1
+
+    # Tính toán kết quả cho từng nhóm
     by_type_results = {}
     for stype, stats in type_stats.items():
-        by_type_results[stype] = calculate_prf1(stats["tp"], stats["fp"], stats["fn"])
+        by_type_results[stype] = calculate_metrics(
+            stats["tp"], stats["fp"], stats["fn"],
+            total_sentences=stats["total_sent"],
+            correct_sentences=stats["correct_sent"]
+        )
 
     by_comp_results = {}
     for comp, stats in comp_stats.items():
-        by_comp_results[comp] = calculate_prf1(stats["tp"], stats["fp"], stats["fn"])
+        by_comp_results[comp] = calculate_metrics(stats["tp"], stats["fp"], stats["fn"])
 
     return {
         "match_mode": match_mode,
-        "overall": calculate_prf1(overall_tp, overall_fp, overall_fn),
+        "overall": calculate_metrics(
+            overall_tp, overall_fp, overall_fn,
+            total_sentences=total_sentences,
+            correct_sentences=correct_sentences
+        ),
         "by_type": by_type_results,
         "by_component": by_comp_results,
         "error_logs": error_logs
@@ -238,8 +250,7 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
 
 
 if __name__ == "__main__":
-    # Mã thử nghiệm chạy độc lập (Mock-up chạy thử tuần 1)
-    print("--- CHẠY THỬ MODULE EVALUATOR (TUẦN 1) ---")
+    print("--- CHẠY THỬ MODULE EVALUATOR CÓ ACCURACY ---")
     mock_pipeline_output = [
         {
             "sentence": "Trường Đại học A triển khai chương trình AI.",
@@ -251,13 +262,7 @@ if __name__ == "__main__":
             "sentence": "Công ty A không triển khai dự án B.",
             "type": "negative",
             "gold_triples": [["Công ty A", "không triển khai", "dự án B"]],
-            "predicted_triples": [["Công ty A", "triển khai", "dự án B"]]  # Mô phỏng lỗi thiếu từ phủ định
-        },
-        {
-            "sentence": "Dự án B được triển khai bởi Công ty A.",
-            "type": "passive",
-            "gold_triples": [["Công ty A", "triển khai", "Dự án B"]],
-            "predicted_triples": [["Dự án B", "triển khai", "Công ty A"]]  # Mô phỏng lỗi bị động nhầm S-O
+            "predicted_triples": [["Công ty A", "triển khai", "dự án B"]]
         }
     ]
 
