@@ -48,50 +48,100 @@ Trước khi thực hiện các lệnh, cần mở PowerShell hoặc Terminal t�
 Nếu xảy ra lỗi khi import underthesea, kiểm tra xem thư viện đã được cài đặt trong đúng môi trường Python đang chạy chương trình hay chưa.
 Nếu chương trình không khởi chạy, kiểm tra phiên bản Python, các thư viện đã cài đặt, đường dẫn mã nguồn và thông báo lỗi do chương trình cung cấp.
 
-Người 2 — Dependency Parsing tiếng Việt bằng MaltParser
+Người 2 — Vietnamese Dependency Parsing with MaltParser
 1. Mục tiêu
 
-Xây dựng bước phân tích cú pháp phụ thuộc (dependency parsing) trong pipeline của nhóm:
+Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
-Đầu vào: câu tiếng Việt đã tách từ và gán POS (kết quả của Người 1).
-Đầu ra: với mỗi từ, một quan hệ phụ thuộc gồm từ chủ (head) và nhãn quan hệ (dependency label). Kết quả được xuất ra JSONL để bàn giao cho Người 3.
+Đầu vào: Câu tiếng Việt đã được tách từ (Word Segmentation) và gán nhãn từ loại (POS Tagging) bởi Người 1.
+Đầu ra: Với mỗi từ trong câu, xác định từ chủ (head) và nhãn quan hệ phụ thuộc (dependency label).
+Định dạng đầu ra: CoNLL và JSONL để phục vụ kiểm tra, đánh giá và bàn giao kết quả cho Người 3.
 
-2. Dữ liệu
-Mục	Giá trị
-Treebank	data/UDD-1.csv (có sẵn token, POS, head, nhãn dependency kiểu Universal Dependencies)
-Số câu	20.000 (không câu nào bị loại do lỗi định dạng)
-Số token	453.551
-Chia dữ liệu	Ngẫu nhiên, seed = 42: 18.000 câu train / 2.000 câu test (45.375 token test)
-Nhãn	Nhãn UD, gồm cả nhãn phụ như nsubj:pass, obl:comp, compound:svc
+# Người 2 — Vietnamese Dependency Parsing with MaltParser
 
-Tập test được tách ra trước khi huấn luyện. File input_pos.csv chỉ chứa từ và POS của tập test, không có head/nhãn. Vì vậy kết quả dự đoán là kết quả thật của parser, không phải đáp án chép lại.
+## 1. Mục tiêu
 
-3. Phương pháp
-Parser: MaltParser 1.9.2 (transition-based, Java).
-Thuật toán: nivreeager (mặc định của script, đổi được bằng --algorithm).
-Định dạng: CoNLL-X 10 cột (ID, FORM, LEMMA, CPOSTAG, POSTAG, FEATS, HEAD, DEPREL, PHEAD, PDEPREL). Cột POS dùng trong huấn luyện: UPOS ở cột 4, XPOS ở cột 5.
-Quy trình: chuyển CSV sang CoNLL → huấn luyện ra models/vietnamese.mco → dự đoán trên tập test → kiểm tra cấu trúc cây → tính UAS/LAS.
+Xây dựng bước **Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt** trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
-4. Hướng dẫn huấn luyện ra vietnamese.mco
-Yêu cầu
-Python 3.8 trở lên. Chỉ dùng thư viện chuẩn, không cần pip install. Kiểm tra: python --version.
-Java 8 trở lên. Đã chạy với Temurin 21. Kiểm tra: java -version: Windows: winget install EclipseAdoptium.Temurin.21.JDK, sau đó đóng và mở lại VS Code/terminal.
-Bước 1. Giải nén MaltParser
+* **Đầu vào:** Dữ liệu tiếng Việt đã được tách từ (*Word Segmentation*) và gán nhãn từ loại (*POS Tagging*) bởi Người 1.
+* **Đầu ra:** Cây cú pháp phụ thuộc, trong đó mỗi từ được xác định từ chủ (*head*) và nhãn quan hệ phụ thuộc (*dependency label*).
+* **Định dạng dữ liệu:** CoNLL phục vụ xử lý và đánh giá; JSONL phục vụ bàn giao kết quả cho Người 3.
 
-Windows (CMD/PowerShell) và macOS/Linux đều có tar:
+## 2. Phương pháp
 
-tar -xf tools/maltparser-1.9.2.zip -C tools
-Bước 2. Tách dữ liệu thành train/test
-python src/csv_to_conll.py --input data/UDD-1.csv --outdir data
-Bước 3. Huấn luyện MaltParser
-python src/train_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --train data/train.conll
+| Thành phần              | Mô tả                                        |
+| :---------------------- | :------------------------------------------- |
+| **Parser**              | MaltParser 1.9.2                             |
+| **Ngôn ngữ triển khai** | Java                                         |
+| **Thuật toán**          | `nivreeager`                                 |
+| **Bộ dữ liệu**          | Vietnamese Dependency Treebank (`UDD-1.csv`) |
+| **Mô hình huấn luyện**  | `vietnamese.mco`                             |
 
-5. Chạy dự đoán, kiểm tra và đánh giá
+MaltParser sử dụng phương pháp *transition-based dependency parsing*, phân tích cú pháp dựa trên các thao tác chuyển trạng thái. Thuật toán được sử dụng có thể cấu hình thông qua tham số `--algorithm` trong script huấn luyện.
 
+## 3. Yêu cầu môi trường
+
+Trước khi chạy chương trình, hãy đảm bảo các công cụ sau đã được cài đặt:
+
+| Công cụ    | Phiên bản yêu cầu | Mục đích                                          |
+| :--------- | :---------------- | :------------------------------------------------ |
+| Python     | 3.8 trở lên       | Chạy các script xử lý dữ liệu và điều phối parser |
+| Java JDK   | 8 trở lên         | Chạy MaltParser                                   |
+| MaltParser | 1.9.2             | Huấn luyện và dự đoán cú pháp phụ thuộc           |
+
+Ngoài ra, cần chuẩn bị bộ dữ liệu `UDD-1.csv` để huấn luyện mô hình.
+
+### 3.1. Kiểm tra Python
+
+Mở terminal tại thư mục dự án và chạy:
+
+```bash
+python --version
+```
+
+### 3.2. Kiểm tra Java
+
+```bash
+java -version
+```
+
+Nếu chưa cài Java trên Windows, có thể cài **Eclipse Temurin JDK 21** bằng Windows Package Manager:
+
+```powershell
+winget install EclipseAdoptium.Temurin.21.JDK
+```
+
+Sau khi cài đặt, hãy đóng và mở lại terminal hoặc VS Code để cập nhật môi trường. Tiếp theo, chạy lại `java -version` để xác nhận Java đã được cài đặt thành công.
+
+### 3.3. Thư viện Python
+
+Các script được thiết kế để sử dụng thư viện chuẩn của Python, do đó không cần cài đặt thêm package bằng `pip`, miễn là mã nguồn không sử dụng thư viện bên ngoài.
+
+**Lưu ý:** Các lệnh trong README được thực hiện từ thư mục gốc của repository để bảo đảm các đường dẫn tương đối hoạt động chính xác.
+
+
+## 4. Chạy dự đoán, kiểm tra và đánh giá
+
+### Bước 1. Chuẩn bị dữ liệu đầu vào
+
+```bash
 python src/prepare_malt_input.py --input data/input_pos.csv --output data/malt_input.conll
+```
 
+### Bước 2. Chạy Dependency Parsing
+
+```bash
 python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --model models/vietnamese.mco --input data/malt_input.conll --output data/dependency_predictions.conll
+```
 
+### Bước 3. Kiểm tra kết quả dự đoán
+
+```bash
 python src/validate_dependency.py --input data/dependency_predictions.conll
+```
 
+### Bước 4. Đánh giá mô hình
+
+```bash
 python src/evaluate_dependency.py --gold data/test.conll --pred data/dependency_predictions.conll
+```
