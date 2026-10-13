@@ -55,6 +55,7 @@ Xây dựng bước phân tích cú pháp phụ thuộc (dependency parsing) tro
 
 Đầu vào: câu tiếng Việt đã tách từ và gán POS (kết quả của Người 1).
 Đầu ra: với mỗi từ, một quan hệ phụ thuộc gồm từ chủ (head) và nhãn quan hệ (dependency label). Kết quả được xuất ra JSONL để bàn giao cho Người 3.
+
 2. Dữ liệu
 Mục	Giá trị
 Treebank	data/UDD-1.csv (có sẵn token, POS, head, nhãn dependency kiểu Universal Dependencies)
@@ -70,6 +71,7 @@ Parser: MaltParser 1.9.2 (transition-based, Java).
 Thuật toán: nivreeager (mặc định của script, đổi được bằng --algorithm).
 Định dạng: CoNLL-X 10 cột (ID, FORM, LEMMA, CPOSTAG, POSTAG, FEATS, HEAD, DEPREL, PHEAD, PDEPREL). Cột POS dùng trong huấn luyện: UPOS ở cột 4, XPOS ở cột 5.
 Quy trình: chuyển CSV sang CoNLL → huấn luyện ra models/vietnamese.mco → dự đoán trên tập test → kiểm tra cấu trúc cây → tính UAS/LAS.
+
 4. Hướng dẫn huấn luyện ra vietnamese.mco
 Yêu cầu
 Python 3.8 trở lên. Chỉ dùng thư viện chuẩn, không cần pip install. Kiểm tra: python --version.
@@ -83,8 +85,13 @@ Bước 2. Tách dữ liệu thành train/test
 python src/csv_to_conll.py --input data/UDD-1.csv --outdir data
 Bước 3. Huấn luyện MaltParser
 python src/train_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --train data/train.conll
+
 5. Chạy dự đoán, kiểm tra và đánh giá
+
 python src/prepare_malt_input.py --input data/input_pos.csv --output data/malt_input.conll
+
 python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --model models/vietnamese.mco --input data/malt_input.conll --output data/dependency_predictions.conll
+
 python src/validate_dependency.py --input data/dependency_predictions.conll
+
 python src/evaluate_dependency.py --gold data/test.conll --pred data/dependency_predictions.conll
