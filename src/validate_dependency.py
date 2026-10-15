@@ -1,10 +1,4 @@
-"""
-Validate MaltParser output and export:
-- dependency_results.jsonl: one JSON object per sentence for the next pipeline step
-- dependency_errors.csv: structural anomalies for manual review
-
-Input: CoNLL-X/CoNLL-U-style 10-column file with predicted HEAD and DEPREL.
-"""
+#nguoi 2
 import argparse
 import csv
 import json

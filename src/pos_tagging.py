@@ -33,6 +33,7 @@ def features(sent, i):
     if i > 0: #nếu không phải vị trí đầu câu
         #thêm vào dict key pre.lower
         feats["prev.lower"] = sent[i - 1].lower()
+    else:
         #thêm vào dict key BOS
         feats["BOS"] = True #BOS - Beginnig Of Sentence tức là token này đứng đầu câu.
     if i < len(sent) - 1: # nếu vị trí này không phải cuối câu
@@ -154,3 +155,6 @@ def evaluate_pos(y_true, y_pred):
             **metrics # giải nén được các cặp key-value từ metrics vào dict này
         }
     return results
+#trả về các thông số kết quả metrics
+
+#phân tích lỗi kiểm tra các trương hợp lỗi nhiều nhất

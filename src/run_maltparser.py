@@ -1,7 +1,4 @@
-"""
-Run a trained MaltParser model.
-Requires Java and a trained .mco model compatible with the input format.
-"""
+#nguoi 2
 import argparse
 import subprocess
 from pathlib import Path
@@ -30,15 +27,11 @@ def main():
         raise FileNotFoundError(f"Không tìm thấy input: {source}")
     target.parent.mkdir(parents=True, exist_ok=True)
 
-    # MaltParser expects -c <config name> and -w <dir containing <name>.mco>,
-    # not the full path of the .mco file.
-    name = model.stem
     cmd = [
-        args.java, "-jar", str(jar.resolve()),
-        "-w", str(model.resolve().parent),
-        "-c", name,
-        "-i", str(source.resolve()),
-        "-o", str(target.resolve()),
+        args.java, "-jar", str(jar),
+        "-c", str(model),
+        "-i", str(source),
+        "-o", str(target),
         "-m", "parse",
     ]
     print("Running:", " ".join(cmd))

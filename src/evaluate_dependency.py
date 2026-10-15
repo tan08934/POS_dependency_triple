@@ -1,8 +1,4 @@
-"""
-Compute UAS/LAS by comparing predicted and gold CoNLL files.
-Both files must have aligned sentences and tokenization.
-Uses columns: ID=0, FORM=1, HEAD=6, DEPREL=7.
-"""
+#nguoi 2
 import argparse
 from pathlib import Path
 import json

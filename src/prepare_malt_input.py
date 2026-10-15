@@ -1,63 +1,44 @@
-"""
-Prepare tokenized + POS-tagged sentences for MaltParser.
-
-Supported input:
-1) Sentence-level CSV with columns:
-   - sent_id (optional), text (optional)
-   - tokens: serialized list, e.g. "['Tôi' 'đọc' 'sách' '.']"
-   - xpos or pos (serialized list)
-2) Token-level CSV with columns:
-   - sent_id, token, pos (one token per row)
-
-Output is CoNLL-X/CoNLL-U-like 10-column input. HEAD/DEPREL are placeholders;
-MaltParser should replace them during parsing.
-"""
+#nguoi 2
 import argparse
+import ast
 import csv
 import json
 import re
-import sys
 from pathlib import Path
 
 
-_QUOTED = re.compile(r"'((?:\\.|[^'\\])*)'|\"((?:\\.|[^\"\\])*)\"", re.S)
-
-
 def parse_list_cell(value):
-    """Parse a list stored in a CSV cell.
-
-    Handles JSON lists, Python lists and numpy-style reprs such as
-    ['Thời hạn' 'hưởng' '.'] (no commas, may span several lines).
-    NOTE: ast.literal_eval must NOT be used for the numpy style, because
-    adjacent string literals are silently concatenated into one string.
-    """
     if value is None:
         return []
     value = str(value).strip()
     if not value or value.lower() in {"nan", "none"}:
         return []
 
-    if value.startswith("["):
-        try:
-            parsed = json.loads(value)
-            if isinstance(parsed, list):
-                return [str(x) for x in parsed]
-        except Exception:
-            pass
-        # Works for both "['a', 'b']" and "['a' 'b']" (also empty strings).
-        items = []
-        for m in _QUOTED.finditer(value):
-            raw = m.group(1) if m.group(1) is not None else m.group(2)
-            items.append(raw.replace("\\'", "'").replace('\\"', '"'))
-        if items or value.strip("[] \n") == "":
-            return items
+    # JSON/Python list first
+    try:
+        parsed = json.loads(value)
+        if isinstance(parsed, list):
+            return [str(x) for x in parsed]
+    except Exception:
+        pass
+    try:
+        parsed = ast.literal_eval(value)
+        if isinstance(parsed, (list, tuple)):
+            return [str(x) for x in parsed]
+    except Exception:
+        pass
+
+    # Handles numpy-style representation seen in some CSVs:
+    # ['Thời hạn' 'hưởng' 'quyền' '.']
+    items = re.findall(r"'((?:\\.|[^'])*)'|\"((?:\\.|[^\"])*)\"", value)
+    if items:
+        return [(a if a else b).replace("\\'", "'").replace('\\"', '"') for a, b in items]
 
     # Last resort: whitespace-separated values
     return value.split()
 
 
 def read_csv(path):
-    csv.field_size_limit(min(sys.maxsize, 2**31 - 1))
     with open(path, "r", encoding="utf-8-sig", newline="") as f:
         reader = csv.DictReader(f)
         if not reader.fieldnames:

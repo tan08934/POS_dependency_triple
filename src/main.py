@@ -3,7 +3,6 @@ import lib
 from data_loader import load_data
 from word_segmetation.segment import segment_text
 from pos_tagging import features, features2, sentfeatures, train_test_valid, train_crf, predict, evaluate_pos
-from evaluator import  calculate_metrics
 
 df = load_data()
 #chuẩn hóa
@@ -95,26 +94,87 @@ re_compare = comparison[["recall_window1", "recall_window2"]].copy()
 re_compare["Chênh lệch recall"] = (re_compare["recall_window2"] - re_compare["recall_window1"])
 print(re_compare.round(2).to_string())
 
-#thử nghiệm kiểm tra với ngữ cảnh xa
-different_sentences = []
-for i, (x, true_tags, pred1, pred2) in enumerate(zip(X_test, y_test, y_pred, y_pred2)):
-    if pred1 != pred2:
-        different_sentences.append(i)
-print("Số câu có dự đoán khác nhau:", len(different_sentences))
-print("10 câu đầu tiên:", different_sentences[:10])
+lib.display(df1[["accuracy_window1","precision_window1","recall_window1","f1_window1"]])
 
-for i in different_sentences[:10]:
-    print(f"\nCâu test thứ {i}:")
+# Sau khi huấn luyện xong
+lib.joblib.dump(crf, "models/pos_crf.pkl")
 
-    for token_idx, (features, gold, p1, p2) in enumerate(
-        zip(X_test[i], y_test[i], y_pred[i], y_pred2[i])
+# Khi chạy giao diện thì mở code này
+#crf = lib.joblib.load("models/pos_crf.pkl")
+
+#Xem các lỗ phổ biến:
+errors = []
+
+for sent_idx, (X_sent, y_true_sent, y_pred_sent) in enumerate(
+    zip(X_test, y_test, y_pred)
+):
+    for token_idx, (feat, gold, pred) in enumerate(
+        zip(X_sent, y_true_sent, y_pred_sent)
     ):
-        if p1 != p2:
-            print(f"Token thứ {token_idx}:")
-            print("  Đặc trưng:", features)
-            print("  Nhãn đúng:", gold)
-            print("  Dự đoán cửa sổ +-1:", p1)
-            print("  Dự đoán cửa sổ +-2:", p2)
+        if gold == pred:
+            continue
+
+        token = feat.get("token.lower", "")
+        prev = feat.get("prev.lower", "")
+        next_ = feat.get("next.lower", "")
+
+        # Nhận diện dạng dữ liệu
+        #có phải dạng số hoặc ngày tháng không
+        is_number_like = bool(
+            lib.re.fullmatch(r"[\d.,/%\-]+", token)
+        )
+        #là viết tắt có chữ cái viết hoa và nhiều hơn 1 ký tự
+        is_viettat = (
+            token.isupper() and len(token) > 1
+        )
+        is_multiword = " " in token
+
+        # Gắn các nhóm có thể khảo sát
+        categories = []
+        if is_number_like:
+            categories.append("Dạng số")
+        if is_viettat:
+            categories.append("Chữ viết tắt")
+        if is_multiword:
+            categories.append("Cụm nhiều từ")
+        if token_idx == 0:
+            categories.append("Đầu câu")
+        if token_idx == len(X_sent) - 1:
+            categories.append("Cuối câu")
+
+        errors.append({
+            "sentence_index": sent_idx,
+            "token_index": token_idx,
+            "token": token,
+            "gold": gold,
+            "predicted": pred,
+            "prev": prev,
+            "next": next_,
+            "error_pair": f"{gold} -> {pred}",
+            "categories": categories
+        })
+error_df = lib.pd.DataFrame(errors)
+#thống kê các lỗi phổ biến
+
+#Trường hợp những cặp nhãn bị nhầm nhiều nhất
+print("Các cặp nhãn bị nhầm nhiều nhất:")
+lib.display(error_df["error_pair"].value_counts().head(10))
+#Trường hợp các từ bị nhầm nhiều nhất
+print("Các token bị nhầm nhiều nhất:")
+lib.display(error_df["token"].value_counts().head(10))
+#trường hợp các nhóm lỗi được gắn nhãn theo hình thức/vị trí
+category_counts = lib.Counter(
+    category
+    for categories in error_df["categories"]
+    for category in categories
+)
+print("Số lỗi thuộc từng nhóm khảo sát:")
+lib.display(lib.pd.DataFrame(
+    category_counts.items(),
+    columns=["Nhóm lỗi", "Số token lỗi"]
+).sort_values("Số token lỗi", ascending=False))
+print("Tổng số token dự đoán sai:", len(error_df))
+lib.display(error_df)
 
 
 #chạy tất cả trong giao diện:
@@ -139,4 +199,6 @@ def main(text, crf):
         "tokens": segmented,
         "pos": pos_result,
     }
+
+
 
