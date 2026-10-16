@@ -53,12 +53,12 @@ Nếu chương trình không khởi chạy, kiểm tra phiên bản Python, các
 
 ## 1. Mục tiêu
 
-Xây dựng bước **Dependency Parsing** trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
+Xây dựng bước Dependency Parsing trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
 | Hạng mục | Nội dung |
 | :-- | :-- |
 | Đầu vào | Câu tiếng Việt đã tách từ và gán nhãn từ loại (POS) |
-| Đầu ra | Cây phụ thuộc: mỗi từ có **head** (từ chủ) và **deprel** (nhãn quan hệ) |
+| Đầu ra | Cây phụ thuộc: mỗi từ có head (từ chủ) và deprel (nhãn quan hệ) |
 | Định dạng xử lý và đánh giá | CoNLL-X |
 | Định dạng bàn giao cho Người 3 | JSONL (`data/dependency_results.jsonl`) |
 
@@ -70,7 +70,7 @@ Xây dựng bước **Dependency Parsing** trong pipeline xử lý ngôn ngữ t
 | Thuật toán | `nivreeager` (đổi bằng tham số `--algorithm` của `train_maltparser.py`) |
 | Bộ dữ liệu | Vietnamese Dependency Treebank (`UDD-1.csv`) |
 | Chia dữ liệu | 90% train, 10% test, `seed=42` |
-| Mô hình đã huấn luyện | `models/vietnamese.mco` (**không xóa, không đưa vào `.gitignore`**) |
+| Mô hình đã huấn luyện | `models/vietnamese.mco` (không xóa, không đưa vào `.gitignore`) |
 | Độ đo đánh giá | UAS (đúng head), LAS (đúng head và nhãn quan hệ) |
 
 ## 3. Yêu cầu môi trường
