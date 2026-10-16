@@ -132,4 +132,10 @@ python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar -
 python src/validate_dependency.py --input data/dependency_predictions.conll
 python src/evaluate_dependency.py --gold data/test.conll --pred data/dependency_predictions.conll
 ```
-
+## Module Trích xuất Bộ ba (Rule Extractor)
+- File module: `src/rule_extractor.py`
+- Cách sử dụng:
+    Đã thêm thư viện sau:
+  from src.rule_extractor import TokenNode, extract_triples_openie
+  
+- Đưa danh sách TokenNode từ dependency parser vào để lấy kết quả
