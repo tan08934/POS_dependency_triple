@@ -21,12 +21,15 @@ def parse_list_cell(value):
             return [str(x) for x in parsed]
     except Exception:
         pass
-    try:
-        parsed = ast.literal_eval(value)
-        if isinstance(parsed, (list, tuple)):
-            return [str(x) for x in parsed]
-    except Exception:
-        pass
+    # Dạng numpy ['a' 'b'] (không có dấu phẩy): literal_eval sẽ ghép thành 'ab' nên bỏ qua bước này
+    numpy_style = re.search(r"'\s+'|\"\s+\"", value) is not None
+    if not numpy_style:
+        try:
+            parsed = ast.literal_eval(value)
+            if isinstance(parsed, (list, tuple)):
+                return [str(x) for x in parsed]
+        except Exception:
+            pass
 
     # Handles numpy-style representation seen in some CSVs:
     # ['Thời hạn' 'hưởng' 'quyền' '.']
