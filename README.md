@@ -88,7 +88,7 @@ py -3.11 -m pip install underthesea pandas numpy matplotlib scikit-learn sklearn
 Terminal phải đang ở thư mục gốc project (thư mục chứa `src/`, `data/`, `models/`). Nếu chưa ở đó thì `cd` vào (tên thư mục tùy máy, ví dụ):
 
 ```
-cd POS_dependency_triple
+cd POS_dependency_triple-main
 py -3.11 -m pip install underthesea pandas numpy matplotlib scikit-learn sklearn-crfsuite joblib ipython
 py -3.11 src\main.py 
 ```
