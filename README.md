@@ -94,8 +94,6 @@ py -3.11 src\main.py
 ```
 
 
-Bước `train_maltparser.py` có thể bỏ qua nếu đã có `models/vietnamese.mco`.
-
 ## 5. Đầu vào / đầu ra của từng bước
 
 | Bước | File chạy | Chức năng | Đầu vào | Đầu ra |
