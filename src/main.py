@@ -1,11 +1,6 @@
 """
 Pipeline: chuẩn hóa -> tách từ -> POS (CRF) -> dependency (MaltParser) -> bộ ba (rule_extractor).
 
-Cách chạy (từ thư mục gốc project):
-    python src/main.py                       # chạy toàn bộ các bước lần lượt
-    python src/main.py --skip-pos-train      # dùng models/pos_crf.pkl có sẵn, không huấn luyện lại CRF
-    python src/main.py --retrain-malt        # huấn luyện lại MaltParser (mặc định chỉ train khi chưa có .mco)
-    python src/main.py --text "Chính phủ ban hành quy định mới."   # câu demo ở bước cuối
 """
 import sys
 import json
