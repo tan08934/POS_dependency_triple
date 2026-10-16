@@ -49,88 +49,63 @@ Nếu xảy ra lỗi khi import underthesea, kiểm tra xem thư viện đã đ�
 Nếu chương trình không khởi chạy, kiểm tra phiên bản Python, các thư viện đã cài đặt, đường dẫn mã nguồn và thông báo lỗi do chương trình cung cấp.
 
 
-# Người 2 — Vietnamese Dependency Parsing with MaltParser
+# Người 2 — Phân tích cú pháp phụ thuộc tiếng Việt bằng MaltParser
 
 ## 1. Mục tiêu
 
-Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
+Xây dựng bước **Dependency Parsing** trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
-* **Đầu vào:** Dữ liệu tiếng Việt đã được tách từ (*Word Segmentation*) và gán nhãn từ loại (*POS Tagging*) từ file UDD-1.csv.
-* **Đầu ra:** Cây cú pháp phụ thuộc, trong đó mỗi từ được xác định từ chủ (*head*) và nhãn quan hệ phụ thuộc (*dependency label*).
-* **Định dạng dữ liệu:** CoNLL phục vụ xử lý và đánh giá; JSONL phục vụ bàn giao kết quả cho Người 3.
+| Hạng mục | Nội dung |
+| :-- | :-- |
+| Đầu vào | Câu tiếng Việt đã tách từ và gán nhãn từ loại (POS) |
+| Đầu ra | Cây phụ thuộc: mỗi từ có **head** (từ chủ) và **deprel** (nhãn quan hệ) |
+| Định dạng xử lý và đánh giá | CoNLL-X |
+| Định dạng bàn giao cho Người 3 | JSONL (`data/dependency_results.jsonl`) |
 
 ## 2. Phương pháp
 
-| Thành phần              | Mô tả                                        |
-| :---------------------- | :------------------------------------------- |
-| **Parser**              | MaltParser 1.9.2                             |
-| **Ngôn ngữ triển khai** | Java                                         |
-| **Thuật toán**          | `nivreeager`                                 |
-| **Bộ dữ liệu**          | Vietnamese Dependency Treebank (`UDD-1.csv`) |
-| **Mô hình huấn luyện**  | `vietnamese.mco`                             |
-
-MaltParser sử dụng phương pháp *transition-based dependency parsing*, phân tích cú pháp dựa trên các thao tác chuyển trạng thái. Thuật toán được sử dụng có thể cấu hình thông qua tham số `--algorithm` trong script huấn luyện.
+| Thành phần | Mô tả |
+| :-- | :-- |
+| Parser | MaltParser 1.9.2 (Java), transition-based |
+| Thuật toán | `nivreeager` (đổi bằng tham số `--algorithm` của `train_maltparser.py`) |
+| Bộ dữ liệu | Vietnamese Dependency Treebank (`UDD-1.csv`) |
+| Chia dữ liệu | 90% train, 10% test, `seed=42` |
+| Mô hình đã huấn luyện | `models/vietnamese.mco` (**không xóa, không đưa vào `.gitignore`**) |
+| Độ đo đánh giá | UAS (đúng head), LAS (đúng head và nhãn quan hệ) |
 
 ## 3. Yêu cầu môi trường
 
-Trước khi chạy chương trình, hãy đảm bảo các công cụ sau đã được cài đặt:
+Python 3.11, Java JDK 8 trở lên, MaltParser 1.9.2 (có sẵn `tools/maltparser-1.9.2.zip`, `main.py` tự giải nén).
 
-| Công cụ    | Phiên bản yêu cầu | Mục đích                                          |
-| :--------- | :---------------- | :------------------------------------------------ |
-| Python     | 3.8 trở lên       | Chạy các script xử lý dữ liệu và điều phối parser |
-| Java JDK   | 8 trở lên         | Chạy MaltParser                                   |
-| MaltParser | 1.9.2             | Huấn luyện và dự đoán cú pháp phụ thuộc           |
-
-Ngoài ra, cần chuẩn bị bộ dữ liệu `UDD-1.csv` để huấn luyện mô hình.
-
-### 3.1. Kiểm tra Python
-
-Mở terminal tại thư mục dự án và chạy:
-
-```bash
-python --version
 ```
-
-### 3.2. Kiểm tra Java
-
-```bash
+py -3.11 --version
 java -version
+py -3.11 -m pip install underthesea pandas numpy matplotlib scikit-learn sklearn-crfsuite joblib ipython
 ```
 
-Nếu chưa cài Java trên Windows, có thể cài **Eclipse Temurin JDK 21** bằng Windows Package Manager:
+## 4. Cách chạy trong terminal
 
-```powershell
-winget install EclipseAdoptium.Temurin.21.JDK
+Terminal phải đang ở thư mục gốc project (thư mục chứa `src/`, `data/`, `models/`). Nếu chưa ở đó thì `cd` vào (tên thư mục tùy máy, ví dụ):
+
+```
+cd POS_dependency_triple
+py -3.11 -m pip install underthesea pandas numpy matplotlib scikit-learn sklearn-crfsuite joblib ipython
+py -3.11 src\main.py --skip-pos-train
 ```
 
-Sau khi cài đặt, hãy đóng và mở lại terminal hoặc VS Code để cập nhật môi trường. Tiếp theo, chạy lại `java -version` để xác nhận Java đã được cài đặt thành công.
-### 3.3. Cài Maltparser
-```bash
-curl -L -o tools/maltparser-1.9.2.zip http://maltparser.org/dist/maltparser-1.9.2.zip
-tar -xf tools/maltparser-1.9.2.zip -C tools
-```
 
-## 4. Chạy dự đoán, kiểm tra và đánh giá
+Bước `train_maltparser.py` có thể bỏ qua nếu đã có `models/vietnamese.mco`.
 
-### Bước 1. Tách dữ liệu
+## 5. Đầu vào / đầu ra của từng bước
 
-```bash
-python src/csv_to_conll.py --input src/UDD-1.csv --outdir data
-```
-
-### Bước 2. Chạy huấn luyện
-
-```bash
-python src/train_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --train data/train.conll
-```
-
-### Bước 3. Kiểm tra kết quả dự đoán
-
-```bash
-python src/prepare_malt_input.py --input data/input_pos.csv --output data/malt_input.conll
-python src/run_maltparser.py --jar tools/maltparser-1.9.2/maltparser-1.9.2.jar --model models/vietnamese.mco --input data/malt_input.conll --output data/dependency_predictions.conll
-python src/validate_dependency.py --input data/dependency_predictions.conll
-python src/evaluate_dependency.py --gold data/test.conll --pred data/dependency_predictions.conll
+| Bước | File chạy | Chức năng | Đầu vào | Đầu ra |
+| :-- | :-- | :-- | :-- | :-- |
+| 1 | `csv_to_conll.py` | Đọc treebank, loại câu lỗi, chia 90/10 | `UDD-1.csv` | `data/train.conll`, `data/test.conll` (nhãn chuẩn); `data/input_pos.csv` (câu test chỉ có từ + POS) |
+| 2 | `train_maltparser.py` | Huấn luyện MaltParser | `data/train.conll`, `maltparser-1.9.2.jar` | `models/vietnamese.mco` |
+| 3 | `prepare_malt_input.py` | Đổi CSV sang CoNLL-X cho parser (HEAD/DEPREL điền giá trị giả) | `data/input_pos.csv` | `data/malt_input.conll` |
+| 4 | `run_maltparser.py` | MaltParser dự đoán head và deprel | `data/malt_input.conll`, `models/vietnamese.mco`, file jar | `data/dependency_predictions.conll` |
+| 5 | `validate_dependency.py` | Kiểm tra cấu trúc cây, xuất JSONL bàn giao | `data/dependency_predictions.conll` | `data/dependency_results.jsonl`, `data/dependency_errors.csv` |
+| 6 | `evaluate_dependency.py` | Tính UAS, LAS so với đáp án | `data/test.conll` (gold), `data/dependency_predictions.conll` | `data/evaluation.json` |
 ```
 ## Module Trích xuất Bộ ba (Rule Extractor)
 - File module: `src/rule_extractor.py`
