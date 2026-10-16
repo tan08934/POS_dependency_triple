@@ -27,11 +27,14 @@ def main():
         raise FileNotFoundError(f"Không tìm thấy input: {source}")
     target.parent.mkdir(parents=True, exist_ok=True)
 
+    # MaltParser cần tên cấu hình (không có đuôi .mco) + thư mục chứa model (-w).
+    # Cách này chạy được trên cả Windows lẫn Linux/macOS.
     cmd = [
-        args.java, "-jar", str(jar),
-        "-c", str(model),
-        "-i", str(source),
-        "-o", str(target),
+        args.java, "-jar", str(jar.resolve()),
+        "-c", model.stem,
+        "-w", str(model.resolve().parent),
+        "-i", str(source.resolve()),
+        "-o", str(target.resolve()),
         "-m", "parse",
     ]
     print("Running:", " ".join(cmd))
