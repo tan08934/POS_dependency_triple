@@ -70,7 +70,7 @@ Xây dựng bước Dependency Parsing trong pipeline xử lý ngôn ngữ tự 
 | Thuật toán | `nivreeager` (đổi bằng tham số `--algorithm` của `train_maltparser.py`) |
 | Bộ dữ liệu | Vietnamese Dependency Treebank (`UDD-1.csv`) |
 | Chia dữ liệu | 90% train, 10% test, `seed=42` |
-| Mô hình đã huấn luyện | `models/vietnamese.mco` (không xóa, không đưa vào `.gitignore`) |
+| Mô hình đã huấn luyện | `models/vietnamese.mco` |
 | Độ đo đánh giá | UAS (đúng head), LAS (đúng head và nhãn quan hệ) |
 
 ## 3. Yêu cầu môi trường
