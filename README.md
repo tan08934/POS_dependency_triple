@@ -55,7 +55,7 @@ Nếu chương trình không khởi chạy, kiểm tra phiên bản Python, các
 
 Xây dựng bước Dependency Parsing (phân tích cú pháp phụ thuộc) tiếng Việt trong pipeline xử lý ngôn ngữ tự nhiên của nhóm.
 
-* **Đầu vào:** Dữ liệu tiếng Việt đã được tách từ (*Word Segmentation*) và gán nhãn từ loại (*POS Tagging*) bởi Người 1.
+* **Đầu vào:** Dữ liệu tiếng Việt đã được tách từ (*Word Segmentation*) và gán nhãn từ loại (*POS Tagging*) từ file UDD-1.csv.
 * **Đầu ra:** Cây cú pháp phụ thuộc, trong đó mỗi từ được xác định từ chủ (*head*) và nhãn quan hệ phụ thuộc (*dependency label*).
 * **Định dạng dữ liệu:** CoNLL phục vụ xử lý và đánh giá; JSONL phục vụ bàn giao kết quả cho Người 3.
 
