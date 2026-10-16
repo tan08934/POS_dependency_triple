@@ -103,7 +103,7 @@ py -3.11 src\main.py
 | 3 | `prepare_malt_input.py` | Đổi CSV sang CoNLL-X cho parser (HEAD/DEPREL điền giá trị giả) | `data/input_pos.csv` | `data/malt_input.conll` |
 | 4 | `run_maltparser.py` | MaltParser dự đoán head và deprel | `data/malt_input.conll`, `models/vietnamese.mco`, file jar | `data/dependency_predictions.conll` |
 | 5 | `validate_dependency.py` | Kiểm tra cấu trúc cây, xuất JSONL bàn giao | `data/dependency_predictions.conll` | `data/dependency_results.jsonl`, `data/dependency_errors.csv` |
-| 6 | `evaluate_dependency.py` | Tính UAS, LAS so với đáp án | `data/test.conll` (gold), `data/dependency_predictions.conll` | `data/evaluation.json` |
+| 6 | `evaluate_dependency.py` | Tính UAS, LAS so với đáp án | `data/test.conll`, `data/dependency_predictions.conll` | `data/evaluation.json` |
 ```
 ## Module Trích xuất Bộ ba (Rule Extractor)
 - File module: `src/rule_extractor.py`
