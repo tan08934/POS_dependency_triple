@@ -62,7 +62,7 @@ def del_emptycol(df, empty_idx):
 #hàm thả giao diện
 #đầu vào người dùng nhập vào câu
 def preprocess_data(text):
-    if isinstance(text,str) or not text.strip():
+    if not isinstance(text, str) or not text.strip():
         raise ValueError("Vui lòng nhập vào một câu tiếng Việt.")
     normalized = normalize_text(text)
     segmented = segment_text(normalized)
