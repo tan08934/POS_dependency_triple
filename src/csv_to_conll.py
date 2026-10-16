@@ -55,6 +55,9 @@ def main():
             continue
         good.append((r, cols[0], cols[1], cols[2], cols[3], heads, cols[5]))
 
+    if not good:
+        raise SystemExit(f"Không có câu hợp lệ nào (bỏ qua {skipped}); dừng để không ghi đè train/test.conll. "
+                         "Kiểm tra định dạng cột trong --input.")
     random.Random(args.seed).shuffle(good)
     n_test = max(1, int(len(good) * args.test_ratio))
     test, train = good[:n_test], good[n_test:]
@@ -69,7 +72,7 @@ def main():
         w = csv.writer(f)
         w.writerow(["sent_id", "text", "tokens", "xpos", "upos"])
         for r, toks, up, xp, *_ in part_rows(test):
-            w.writerow([r["sent_id"], r["text"], repr(toks), repr(xp), repr(up)])
+            w.writerow([r.get("sent_id") or r.get("") or "", r.get("text", ""), repr(toks), repr(xp), repr(up)])
 
     print(f"Câu hợp lệ: {len(good)} | bỏ qua (lỗi định dạng): {skipped}")
     print(f"train={len(train)}  test={len(test)}  -> {out.resolve()}")
