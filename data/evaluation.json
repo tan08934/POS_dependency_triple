@@ -1,0 +1,7 @@
+{
+  "sentences": 2000,
+  "tokens": 45375,
+  "UAS": 0.7820165289256198,
+  "LAS": 0.6858181818181818,
+  "note": "Exclude punctuation only if the evaluation protocol explicitly requires it."
+}
