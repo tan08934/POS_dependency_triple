@@ -90,7 +90,7 @@ Terminal phải đang ở thư mục gốc project (thư mục chứa `src/`, `d
 ```
 cd POS_dependency_triple
 py -3.11 -m pip install underthesea pandas numpy matplotlib scikit-learn sklearn-crfsuite joblib ipython
-py -3.11 src\main.py --skip-pos-train
+py -3.11 src\main.py 
 ```
 
 
