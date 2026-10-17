@@ -14,7 +14,7 @@ from typing import List, Dict, Tuple, Any
 def load_dataset(filepath: str) -> List[Dict[str, Any]]:
     """Đọc dữ liệu từ file JSON kiểm thử."""
     if not os.path.exists(filepath):
-        print(f"❌ Không tìm thấy file: {filepath}")
+        print(f" Không tìm thấy file: {filepath}")
         return []
     with open(filepath, 'r', encoding='utf-8') as f:
         return json.load(f)
@@ -227,7 +227,7 @@ def save_reports(report: Dict[str, Any], json_output: str = 'data/evaluation.jso
                     err.get("unmatched_gold_count"),
                     err.get("unmatched_pred_count")
                 ])
-    print(f"✅ Đã lưu kết quả đánh giá vào {json_output} và log lỗi vào {csv_output}")
+    print(f" Đã lưu kết quả đánh giá vào {json_output} và log lỗi vào {csv_output}")
 
 
 if __name__ == "__main__":
