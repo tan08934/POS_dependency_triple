@@ -1,6 +1,6 @@
 """
 Module: evaluator.py (Đã sửa lỗi logic theo góp ý của nhóm)
-Tác giả: Người 3
+
 Mục đích: Đánh giá chính xác Precision, Recall, F1, Accuracy cho đa bộ ba,
           sửa lỗi tích Đề-các khi tính S/R/O và sửa lỗi log cứng [0].
 """
