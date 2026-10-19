@@ -19,7 +19,7 @@ def load_data():
     df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
     lib.display(df.columns.tolist())
     # tận 20000 câu
-    df = df.head(3000) # lấy mẫu nhỏ hơn
+    df = df.head(200) # lấy mẫu nhỏ hơn
     return df
 
 

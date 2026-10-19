@@ -302,9 +302,11 @@ def tag_sentence(text, crf):
     """Tách từ + gán POS (cùng cách tách từ như lúc huấn luyện CRF: segment_text trên câu gốc)."""
     if not isinstance(text, str) or not text.strip():
         raise ValueError("Vui lòng nhập vào một câu tiếng Việt.")
+    text = preprocess_data(text)
     tokens = segment_text(text)
     X = sentfeatures(tokens, features)
     return tokens, predict(crf, [X])[0]
+#do predict nhiều câu, lấy đúng câu mình thả vào thôi
 
 
 def parse_dependencies(sentences):
@@ -389,7 +391,7 @@ def run_all(skip_pos_train=False, retrain_malt=False, demo_text="Chính phủ ba
 
     print("\n===== [4/4] Demo một câu =====")
     result = main(demo_text, crf)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    print(json.dumps(result, ensure_ascii=False, indent=2,default=lambda x: x.tolist() if hasattr(x, "tolist") else str(x)))
     return result
 
 

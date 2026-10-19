@@ -1,0 +1,1785 @@
+{
+  "match_mode": "exact",
+  "overall": {
+    "accuracy": 0.0,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "sentence_accuracy": 37.0
+  },
+  "by_type": {
+    "simple": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "sentence_accuracy": 70.0
+    },
+    "long_phrase": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "sentence_accuracy": 34.69
+    },
+    "negative": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "sentence_accuracy": 32.35
+    },
+    "multiple_verbs": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "sentence_accuracy": 31.25
+    }
+  },
+  "by_component": {
+    "subject": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "relation": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "object": {
+      "accuracy": 0.0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  },
+  "error_logs": [
+    {
+      "sentence": "Thời hạn hưởng quyền bề mặt đã hết .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thời hạn",
+          "hưởng",
+          "quyền bề mặt"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thuyền viên hồi hương được đưa tới địa điểm quy định trong hợp đồng lao động của thuyền viên hoặc địa điểm nơi thuyền viên cư trú .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thuyền viên",
+          "được đưa",
+          "tới địa điểm quy định trong hợp đồng lao động"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nếu không học Sư phạm , dù có đi dạy , mình cũng chỉ có thể đứng lớp theo bản năng \" , Tráng nói , cho biết chọn ở lại trường làm việc , đồng thời học lên thạc sĩ để trở thành giảng viên .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "mình",
+          "cũng chỉ có thể đứng lớp",
+          "theo bản năng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Chị Hoài , phụ huynh lớp 8/3 , kể nhiều học sinh bị bắt nộp tiền phạt vì không sinh hoạt đúng giờ mà giáo viên chủ nhiệm đặt ra .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chị Hoài phụ huynh lớp 8/3",
+          "kể",
+          "nhiều học sinh"
+        ]
+      ]
+    },
+    {
+      "sentence": "Có những trường không mạnh về phong trào bồi dưỡng học sinh giỏi nhưng hiển nhiên có nhiều suất tham dự hơn nên giáo viên , phụ huynh bức xúc \" , thầy Hà nói . \"",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "hiển nhiên",
+          "nhưng có",
+          "nhiều suất"
+        ]
+      ]
+    },
+    {
+      "sentence": "Phong tỏa tài khoản cũng được áp dụng đối với tài khoản của người khác nếu có căn cứ cho rằng số tiền trong tài khoản đó liên quan đến hành vi phạm tội của người bị buộc tội .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Phong",
+          "tỏa",
+          "tài khoản"
+        ],
+        [
+          "số tiền trong tài khoản",
+          "rằng liên quan",
+          "đến hành vi của người"
+        ]
+      ]
+    },
+    {
+      "sentence": "Lý giải về chùm ca bệnh tại Ấn Độ , chuyên gia cho rằng nguồn lây xuất phát từ hoàn cảnh tiếp xúc đặc biệt .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nguồn lây",
+          "rằng xuất phát",
+          "từ hoàn cảnh tiếp xúc đặc biệt"
+        ]
+      ]
+    },
+    {
+      "sentence": "Phần cầu chính dài 2,4 km , đường dẫn phía TP.HCM dài 3,8 km và đường dẫn phía Đồng Nai dài 5,5 km .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Phần cầu chính",
+          "dài",
+          "2,4 km"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người phạm tội còn có thể bị phạt tiền từ 10.000.000 đồng đến 50.000.000 đồng , cấm đảm nhiệm chức vụ , cấm hành nghề hoặc làm công việc nhất định từ 01 năm đến 05 năm .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người",
+          "còn có thể bị phạt",
+          "tiền từ 10.000.000 đồng đến 50.000.000 đồng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Định kỳ hằng năm , Cơ quan thống kê trung ương công bố tình trạng mức sinh để Chính phủ , chính quyền địa phương cấp tỉnh xây dựng , thực hiện các chính sách hỗ trợ , khuyến khích phù hợp để duy trì mức sinh thay thế .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Cơ quan thống kê trung ương",
+          "công bố",
+          "tình trạng mức sinh"
+        ]
+      ]
+    },
+    {
+      "sentence": "Mạng lưới Thành phố học tập toàn cầu hiện gồm 425 thành viên từ 91 quốc gia , hỗ trợ hơn 498 triệu công dân được học tập suốt đời .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Mạng lưới Thành phố",
+          "gồm",
+          "425 thành viên từ 91 quốc gia"
+        ]
+      ]
+    },
+    {
+      "sentence": "Linh cho hay được truyền cảm hứng từ nhiều người chị đi trước , ngoài công việc còn dẫn lối , chia sẻ kinh nghiệm và tài liệu cho cộng đồng .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Linh",
+          "được truyền",
+          "cảm hứng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trong đó , khối C00 dùng để xét vào ngành Luật , còn A00 áp dụng cho các ngành Luật , Quản trị luật , Quản trị kinh doanh , Kinh doanh quốc tế , Tài chính - Ngân hàng , Ngôn ngữ Anh .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "C00",
+          "dùng",
+          "Trong đó"
+        ],
+        [
+          "còn A00",
+          "áp dụng",
+          "cho các ngành Luật Quản trị luật Quản trị"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sau đó , mức thuế có thể được điều chỉnh theo tỷ lệ lạm phát .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "mức thuế",
+          "có thể được điều chỉnh",
+          "theo tỷ lệ lạm phát"
+        ]
+      ]
+    },
+    {
+      "sentence": "43 em khác đỗ đại học với 27 điểm trở lên , theo tổ hợp ba môn .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "43 em khác",
+          "đỗ",
+          "đại học"
+        ]
+      ]
+    },
+    {
+      "sentence": "Cơ sở vật chất của trường gồm đầy đủ khu học tập và hỗ trợ học tập ; khu hành chính - quản trị và phụ trợ ; khu nội trú , công vụ ; sân chơi , khu thể dục thể thao ; nhà văn hóa , nhà đa năng ; nhà ăn , bếp và khu trải nghiệm tăng gia sản xuất .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Cơ sở vật chất của trường",
+          "gồm",
+          "đầy đủ khu"
+        ]
+      ]
+    },
+    {
+      "sentence": "Việc này cũng gây khó khăn cho việc công nhận văn bằng , chuyển đổi tín chỉ và công nhận lẫn nhau trong môi trường giáo dục quốc tế .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Việc",
+          "cũng gây",
+          "khó khăn"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường Đại học Giao thông vận tải , tiền thân là trường Cao đẳng Công chính , có lịch sử từ những năm đầu của thế kỷ XX.",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Trường Đại học Giao thông vận tải",
+          "có",
+          "lịch sử"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thầy đánh giá đề thi ngày thứ nhất dài nhưng không quá khó hay nặng về mặt toán học .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thầy",
+          "đánh giá",
+          "đề thi ngày thứ nhất"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ngoài bóng rổ , Tường Minh vẫn duy trì kết quả học tập tốt trên lớp .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tường Minh",
+          "vẫn duy trì",
+          "kết quả"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người tự ý nửa chừng chấm dứt việc phạm tội được miễn trách nhiệm hình sự về tội định phạm ; nếu hành vi thực tế đã thực hiện có đủ yếu tố cấu thành của một tội khác , thì người đó phải chịu trách nhiệm hình sự về tội này .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người tự ý",
+          "nửa chừng chấm dứt",
+          "việc"
+        ],
+        [
+          "người",
+          "thì phải chịu",
+          "trách nhiệm hình sự"
+        ]
+      ]
+    },
+    {
+      "sentence": "Quy định chức danh , nhiệm vụ theo chức danh của thuyền viên , trừ các chức danh do Bộ trưởng Bộ Giao thông vận tải quy định .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Quy định chức danh",
+          "trừ",
+          "các chức danh do Bộ trưởng Bộ Giao thông vận tải quy định"
+        ]
+      ]
+    },
+    {
+      "sentence": "Vào học , Tuấn thích thú vì hiểu thêm về cấu trúc , nguyên lý hoạt động từ chi tiết tới tổng quát của một chiếc ôtô , giúp suy luận các nguyên nhân khiến xe hư hỏng .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nguyên lý",
+          "hoạt động",
+          "từ chi tiết"
+        ]
+      ]
+    },
+    {
+      "sentence": "Việc thu thập , lưu giữ , sử dụng , công khai thông tin liên quan đến đời sống riêng tư , bí mật cá nhân phải được người đó đồng ý , việc thu thập , lưu giữ , sử dụng , công khai thông tin liên quan đến bí mật gia đình phải được các thành viên gia đình đồng ý , trừ trường hợp luật có quy định khác .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Việc thu thập",
+          "công khai",
+          "thông tin"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bộ , Ủy ban nhân dân cấp tỉnh khi lập quy hoạch có ảnh hưởng đến công trình hàng hải phải gửi văn bản lấy ý kiến của Bộ Giao thông vận tải .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ cấp tỉnh",
+          "có",
+          "ảnh hưởng đến công trình hàng hải"
+        ]
+      ]
+    },
+    {
+      "sentence": "Câu 1 : Nước nào vượt Thái Lan trở thành nơi hút khách nhất Đông Nam Á ?",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Nước",
+          "vượt",
+          "Thái Lan"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ở phần tọa đàm , hơn 1.500 học sinh được bác sĩ da liễu chia sẻ kiến thức về những thay đổi của làn da tuổi dậy thì , nguyên nhân gây mụn , thói quen ảnh hưởng đến sức khỏe da và cách xây dựng quy trình chăm sóc phù hợp .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nguyên nhân",
+          "gây",
+          "mụn"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tòa nhà chính có dạng xoắn ốc , nhiều lớp .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tòa nhà chính",
+          "có",
+          "dạng xoắn ốc"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bên cạnh đó , khó khăn về kinh phí và cơ sở vật chất tại một số trường cũng là rào cản khiến các hoạt động thay thế dễ trở nên nhàm chán .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bên cạnh",
+          "khó khăn",
+          "về kinh phí"
+        ],
+        [
+          "rào cản",
+          "khiến",
+          "các hoạt động thay thế"
+        ]
+      ]
+    },
+    {
+      "sentence": "Giải nằm trong đề án quốc gia \" Phát triển bóng rổ học đường đến năm 2030 \" .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Giải",
+          "nằm",
+          "trong đề án quốc gia Phát triển"
+        ]
+      ]
+    },
+    {
+      "sentence": "Lương tăng cũng do lương cơ sở tăng , chứ nhà giáo không có chính sách riêng hay đặc thù nào . \"",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Lương",
+          "tăng cũng",
+          "do lương cơ sở"
+        ],
+        [
+          "nhà giáo",
+          "chứ không có",
+          "chính sách riêng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Cả ba cậu bé đều thừa nhận những gì mình đã làm là sai và rất lo lắng sẽ bị ông già Noel tặng cho viên than thay vì những món quà đẹp .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Cả ba cậu bé",
+          "đều thừa nhận",
+          "những gì"
+        ]
+      ]
+    },
+    {
+      "sentence": "IELTS khẳng định chỉ 1 % bài thi gặp lỗi , không công bố con số cụ thể .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "IELTS",
+          "khẳng định",
+          "1 % bài thi"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tài sản bán thuộc sở hữu của người bán hoặc người bán có quyền bán .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tài sản",
+          "bán",
+          "thuộc"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nữ sinh được đánh giá nhanh nhẹn , xông xáo và dẫn nhịp tốt dù không có ưu thế thể hình .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Nữ sinh",
+          "được đánh giá",
+          "nhanh nhẹn"
+        ]
+      ]
+    },
+    {
+      "sentence": "Từ khoảng 2019 , tôi bắt đầu kết nối với đội ngũ lãnh đạo Khan Academy - nền tảng học trực tuyến ở hơn 190 quốc gia với hơn 150 triệu học sinh khắp thế giới , thuyết phục họ cho tôi Việt hóa .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "tôi",
+          "bắt đầu",
+          "kết nối"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ngày 26/12 , Bộ Giáo dục và Đào tạo công bố bộ sách giáo khoa \" Kết nối tri thức với cuộc sống \" sử dụng thống nhất trong giáo dục phổ thông từ năm học 2026 - 2027 .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ Giáo dục và Đào tạo",
+          "công bố",
+          "bộ sách giáo khoa"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thực tế , đa số trường áp dụng đình chỉ học 1-2 tuần , hạ hạnh kiểm , khiển trách hoặc nhắc nhở .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "đa số trường",
+          "áp dụng",
+          "đình chỉ"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trong khi đang hành trình mà trên tàu biển không còn lương thực , thực phẩm dự trữ thì có quyền sử dụng một phần hàng hóa là lương thực , thực phẩm vận chuyển trên tàu ; nếu thật cần thiết thì có quyền sử dụng lương thực , thực phẩm của những người đang ở trên tàu .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "thực phẩm thì có quyền",
+          "sử dụng",
+          "một phần hàng hóa"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người phạm tội còn có thể bị phạt tiền từ 10.000.000 đồng đến 50.000.000 đồng , cấm hành nghề hoặc làm công việc nhất định từ 02 năm đến 05 năm .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người",
+          "còn có thể bị phạt",
+          "tiền từ 10.000.000 đồng đến 50.000.000 đồng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Định kỳ hằng năm , Cơ quan thống kê trung ương công bố tình trạng mất cân bằng giới tính khi sinh để Chính phủ , chính quyền địa phương cấp tỉnh xây dựng , thực hiện biện pháp can thiệp phù hợp để giảm thiểu mất cân bằng giới tính khi sinh .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Cơ quan thống kê trung ương",
+          "công bố",
+          "tình trạng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Yêu cầu áp dụng biện pháp khẩn cấp tạm thời trong trường hợp quy định tại khoản 1 Điều 111 của Bộ luật này được giải quyết như sau : a ) Trường hợp Tòa án nhận đơn yêu cầu trước khi mở phiên tòa thì Thẩm phán được phân công giải quyết vụ án phải xem xét , giải quyết .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Yêu cầu",
+          "được giải quyết",
+          "như sau"
+        ],
+        [
+          "Trường hợp Tòa án",
+          "nhận",
+          "đơn yêu cầu"
+        ]
+      ]
+    },
+    {
+      "sentence": "Khi thấy người có dấu hiệu ngừng tim , ngừng thở , người dân cần gọi ngay cấp cứu 115 , đặt bệnh nhân nằm ngửa trên mặt phẳng cứng và ép tim đúng kỹ thuật .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "người dân",
+          "cần gọi ngay",
+          "cấp cứu 115"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thay vì chỉ học ở \" ngọn \" , Hoa quyết tâm học sâu từ \" rễ \" .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Hoa",
+          "quyết tâm",
+          "học"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người được miễn chấp hành hình phạt theo quy định tại Điều này vẫn phải thực hiện đầy đủ các nghĩa vụ dân sự do Tòa án tuyên trong bản án .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người",
+          "được miễn chấp hành",
+          "hình phạt"
+        ],
+        [
+          "Tòa án",
+          "do tuyên",
+          "trong bản án"
+        ]
+      ]
+    },
+    {
+      "sentence": "Và gần như sáng nào , Hùng cũng đọc được dòng chữ đã nằm lòng suốt gần nửa năm nay - \" Thank you for your application \" ( Cảm ơn vì đã ứng tuyển ) , lời mở đầu mặc định của những email báo trượt .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Hùng",
+          "Và cũng đọc được",
+          "dòng chữ"
+        ],
+        [
+          "Thank",
+          "you",
+          "for your application Cảm ơn"
+        ]
+      ]
+    },
+    {
+      "sentence": "Khi bên có quyền thay đổi nơi cư trú hoặc trụ sở thì phải báo cho bên có nghĩa vụ và phải chịu chi phí tăng lên do việc thay đổi nơi cư trú hoặc trụ sở , trừ trường hợp có thỏa thuận khác .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "bên",
+          "có",
+          "quyền"
+        ],
+        [
+          "việc",
+          "do trừ",
+          "trường hợp"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bà nhận bằng tiến sĩ Toán học ứng dụng tại Đại học Indiana Bloomington năm 1991 , nghiên cứu về sóng phi tuyến , phân tích số và động lực học chất lỏng tính toán .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bà",
+          "nhận",
+          "bằng tiến sĩ Toán học ứng dụng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường Đại học Tôn Đức Thắng vào top 3 sau khi tăng gần 400 hạng , còn Đại học Huế cũng nhảy hơn 700 bậc , vào top 6 .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Đại học Huế",
+          "cũng nhảy",
+          "700 bậc"
+        ]
+      ]
+    },
+    {
+      "sentence": ", Ben Waxman , giám đốc điều hành Intead , công ty chuyên về tiếp thị chiến lược và quản lý tuyển sinh cho giáo dục đại học , chia sẻ vớiThe PIE.",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Ben Waxman",
+          "chia sẻ",
+          "vớiThe PIE"
+        ]
+      ]
+    },
+    {
+      "sentence": "2 - Nghiêm cấm việc sản xuất , lưu thông thuốc giả , thuốc không bảo đảm tiêu chuẩn chất lượng Nhà nước .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "thuốc",
+          "không bảo đảm",
+          "tiêu chuẩn chất lượng Nhà nước"
+        ]
+      ]
+    },
+    {
+      "sentence": "Hành khách là người được vận chuyển trên tàu biển theo hợp đồng vận chuyển hành khách hoặc người được người vận chuyển đồng ý cho đi cùng động vật sống , phương tiện vận tải được vận chuyển theo hợp đồng vận chuyển hàng hóa .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "phương tiện vận tải",
+          "được vận chuyển",
+          "theo hợp đồng vận chuyển hàng hóa"
+        ]
+      ]
+    },
+    {
+      "sentence": "Họ giải quyết những vấn đề thực tiễn bằng lý thuyết Toán học và ngược lại , nghiên cứu các lý thuyết Toán học phục vụ cho ứng dụng . \"",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Họ",
+          "giải quyết",
+          "những vấn đề thực tiễn"
+        ]
+      ]
+    },
+    {
+      "sentence": "Chính phủ thống nhất quản lý nhà nước về dân số trong phạm vi cả nước ; định kỳ 05 năm một lần hoặc đột xuất , báo cáo Quốc hội về công tác dân số .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chính phủ",
+          "thống nhất",
+          "quản lý nhà nước"
+        ]
+      ]
+    },
+    {
+      "sentence": "Phát biểu khi tranh luận và đối đáp Khi phát biểu về đánh giá chứng cứ , đề xuất quan điểm của mình về việc giải quyết vụ án , người tham gia tranh luận phải căn cứ vào tài liệu , chứng cứ đã thu thập được và đã được xem xét , kiểm tra tại phiên tòa cũng như kết quả việc hỏi tại phiên tòa .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "đối đáp",
+          "phải căn cứ",
+          "về đánh giá chứng cứ đề xuất quan điểm của mình"
+        ],
+        [
+          "chứng cứ",
+          "đã thu thập được",
+          "như kết quả việc tại phiên tòa"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sau khi kết thúc phiên tòa , chủ tọa phiên tòa phải kiểm tra biên bản và cùng với Thư ký phiên tòa ký biên bản đó .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "chủ tọa phiên tòa",
+          "phải kiểm tra",
+          "biên bản"
+        ]
+      ]
+    },
+    {
+      "sentence": "Dự thảo luật được chỉnh lý theo hướng làm rõ ràng hơn sự phân định trách nhiệm vốn đã áp dụng lâu nay .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Dự thảo luật",
+          "được chỉnh lý",
+          "theo hướng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bộ cũng khuyến cáo người dân không chia sẻ , bình luận thiếu căn cứ trước những thông tin này .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ",
+          "cũng khuyến cáo",
+          "người dân"
+        ]
+      ]
+    },
+    {
+      "sentence": "Đại diện công ty kể từng dùng AI dịch thuật , nhưng kết quả không ổn với các văn bản sử dụng thuật ngữ chuyên ngành .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Đại diện công ty",
+          "kể từng dùng",
+          "AI"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nếu có kết quả nghiên cứu tốt , mức chi trả lên tới 9-12 triệu đồng .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "mức",
+          "lên",
+          "9-12 triệu đồng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trong thời hạn 03 ngày làm việc , kể từ ngày nhận được khiếu nại , kiến nghị , Chánh án Tòa án đã ra quyết định chuyển vụ việc dân sự phải giải quyết khiếu nại , kiến nghị .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chánh án Tòa án",
+          "đã ra",
+          "quyết định"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người phạm tội còn có thể bị phạt tiền từ 20.000.000 đồng đến 100.000.000 đồng , cấm đảm nhiệm chức vụ , cấm hành nghề hoặc làm công việc nhất định từ 01 năm đến 05 năm .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người",
+          "còn có thể bị phạt",
+          "tiền từ 20.000.000 đồng đến 100.000.000 đồng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Chương trình đào tạo Thạc sĩ Địa chính trị Nam Á tại NUS gồm 40 tín chỉ , kéo dài một năm với lựa chọn học toàn thời gian hoặc hai năm học bán thời gian .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chương trình đào tạo Thạc sĩ Địa chính trị Nam Á tại NUS",
+          "gồm",
+          "40 tín chỉ"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nhưng sau thời gian làm gia sư hồi lớp 11 , nữ sinh thấy mình hợp với nghề Sư phạm hơn .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nữ sinh",
+          "Nhưng thấy",
+          "mình"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ở chiều ngược lại , sinh viên ngành Kiểm toán , Logistics và Quản lý chuỗi cung ứng có lương khởi điểm thấp nhất , khoảng 8,2 - 8,5 triệu đồng .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "sinh viên ngành Kiểm toán Logistics",
+          "có",
+          "lương khởi điểm thấp nhất"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sở hữu chung hỗn hợp là sở hữu đối với tài sản do các chủ sở hữu thuộc các thành phần kinh tế khác nhau góp vốn để sản xuất , kinh doanh thu lợi nhuận .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Sở hữu chung hỗn hợp",
+          "sở hữu",
+          "đối với tài sản"
+        ],
+        [
+          "các chủ sở hữu",
+          "do thuộc",
+          "các thành phần kinh tế khác"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người bị kết án đương nhiên được xóa án tích , nếu từ khi hết thời hiệu thi hành bản án , người đó không thực hiện hành vi phạm tội mới trong thời hạn quy định tại khoản 2 Điều này .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "kết án",
+          "nếu không thực hiện",
+          "hành vi"
+        ]
+      ]
+    },
+    {
+      "sentence": "Kỳ thi đánh giá năng lực của Đại học Quốc gia TP HCM năm 2025 thu hút khoảng 152.800 thí sinh với hơn 223.000 lượt dự thi .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Kỳ thi đánh giá năng lực của Đại học Quốc gia TP HCM năm 2025",
+          "thu hút",
+          "khoảng 152.800 thí sinh"
+        ]
+      ]
+    },
+    {
+      "sentence": "Phòng xử án phải có các khu vực được bố trí riêng cho Hội đồng xét xử , Kiểm sát viên , Thư ký Tòa án , đương sự , người bảo vệ quyền và lợi ích hợp pháp của đương sự , những người tham gia tố tụng khác và người tham dự phiên tòa .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Phòng xử án",
+          "phải có",
+          "các khu vực"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tuy nhiên , lập trường của Mỹ đã thúc đẩy các nền kinh tế khác hành động nhanh hơn .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "lập trường của Mỹ",
+          "Tuy nhiên đã thúc đẩy",
+          "các nền kinh tế khác"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bảo hộ tính mạng , sức khỏe , danh dự , nhân phẩm , tài sản của cá nhân ; danh dự , uy tín , tài sản của pháp nhân Mọi người có quyền được pháp luật bảo hộ về tính mạng , sức khỏe , danh dự , nhân phẩm , tài sản .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Mọi người",
+          "có",
+          "quyền"
+        ]
+      ]
+    },
+    {
+      "sentence": "Không sử dụng từ ngữ , ký hiệu vi phạm truyền thống lịch sử , văn hóa , đạo đức và thuần phong mỹ tục của dân tộc để đặt tên .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "ký hiệu",
+          "vi phạm",
+          "truyền thống lịch sử"
+        ]
+      ]
+    },
+    {
+      "sentence": "Cuối tháng 10 , FDA gọi các ống đựng mẫu nhỏ mang thương hiệu của Theranos là \" thiết bị y tế chưa được cấp phép \" .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "FDA",
+          "gọi",
+          "các ống"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường hợp không thể giao cho người được nhận văn bản tố tụng quy định tại khoản này thì có thể chuyển giao văn bản đó cho chính quyền xã , phường , thị trấn nơi người đó cư trú hoặc cơ quan , tổ chức nơi người đó làm việc , học tập để giao lại cho người được nhận .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Trường hợp",
+          "không thể giao",
+          "cho người"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nếu thời hạn được tính bằng tháng thì 01 tháng được tính là 30 ngày .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "01 tháng",
+          "thì được tính",
+          "30 ngày"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thời hạn quy định tại Điều này không áp dụng đối với vụ án xét xử phúc thẩm theo thủ tục rút gọn , vụ án có yếu tố nước ngoài .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thời hạn quy định tại Điều",
+          "không áp dụng",
+          "đối với vụ án"
+        ],
+        [
+          "án",
+          "có",
+          "yếu tố nước ngoài"
+        ]
+      ]
+    },
+    {
+      "sentence": "1 - Công dân có quyền được bảo vệ sức khỏe , nghỉ ngơi , giải trí , rèn luyện thân thể ; được bảo đảm vệ sinh trong lao động , vệ sinh dinh dưỡng , vệ sinh môi trường sống và được phục vụ về chuyên môn y tế .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Công dân",
+          "có",
+          "quyền"
+        ]
+      ]
+    },
+    {
+      "sentence": "Giáo viên và học sinh nếu dùng tài khoản chung của trường thì không cần đăng ký bất cứ thông tin nào .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Giáo viên",
+          "nếu dùng",
+          "tài khoản chung của trường"
+        ]
+      ]
+    },
+    {
+      "sentence": "Với tâm thế ấy , từ ngày học năm thứ hai ngành Ngôn ngữ Anh , Học viện Ngoại giao , Tùng đã đi dạy thêm để tích lũy kinh nghiệm .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tùng",
+          "đã đi",
+          "Với tâm thế"
+        ]
+      ]
+    },
+    {
+      "sentence": "Yêu cầu bên thế chấp phải cung cấp thông tin về thực trạng tài sản thế chấp .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Yêu cầu bên thế chấp",
+          "phải cung cấp",
+          "thông tin"
+        ]
+      ]
+    },
+    {
+      "sentence": "Học sinh được rèn kỹ năng , thể lực theo chương trình của CLB ngoại hạng Anh .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Học sinh",
+          "được rèn",
+          "kỹ năng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Người phạm tội còn có thể bị phạt tiền từ 10.000.000 đồng đến 100.000.000 đồng , bị cấm đảm nhiệm chức vụ , cấm hành nghề hoặc làm công việc nhất định từ 01 năm đến 05 năm hoặc tịch thu một phần hoặc toàn bộ tài sản .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Người",
+          "còn có thể bị phạt",
+          "tiền từ 10.000.000 đồng đến 100.000.000 đồng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường hợp bên đặt gia công chậm nhận sản phẩm thì bên nhận gia công có thể gửi sản phẩm đó tại nơi nhận gửi giữ và phải báo ngay cho bên đặt gia công .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Trường hợp bên đặt gia công",
+          "chậm nhận",
+          "sản phẩm"
+        ],
+        [
+          "bên nhận gia công",
+          "thì có thể gửi",
+          "sản phẩm"
+        ]
+      ]
+    },
+    {
+      "sentence": "Khi bộ sách đã được đa số địa phương và nhà trường lựa chọn trong các năm trước , sản lượng in ấn cao giúp tối ưu chi phí cố định , vận chuyển và in ấn , từ đó , giảm giá thành trên mỗi đơn vị sản phẩm . \"",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "bộ sách",
+          "đã được giúp",
+          "tối ưu chi phí cố định vận chuyển"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thầy Lê Hùng , Hiệu trưởng , cho biết cả trường không có giáo viên tiếng Anh chuyên trách .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "cả trường",
+          "không có",
+          "giáo viên tiếng Anh chuyên trách"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bộ Giáo dục và Đào tạo ngày 19/12 cho biết đang dự thảo nghị định quy định chi tiết một số điều của Luật Giáo dục đại học , gồm việc đặt tên cơ sở đào tạo .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ Giáo dục và Đào tạo ngày",
+          "19/12",
+          "cho biết"
+        ]
+      ]
+    },
+    {
+      "sentence": "Các em có năng lực tư duy và kỹ năng tốt .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Các em",
+          "có",
+          "năng lực tư duy"
+        ]
+      ]
+    },
+    {
+      "sentence": "Các bên trong hợp đồng có quyền thỏa thuận về nội dung trong hợp đồng .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Các bên trong hợp đồng",
+          "có",
+          "quyền"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ngoài bóng rổ , nữ sinh còn chơi nhiều môn thể thao khác như bóng đá , cầu lông , bida , bơi lội và tập gym hai buổi mỗi tuần .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nữ sinh",
+          "còn chơi",
+          "nhiều môn thể thao khác như bóng đá gym"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trước năm 2025 , mỗi năm Mỹ ghi nhận trung bình khoảng 180 ca sởi kể từ khi nước này tuyên bố xóa sổ căn bệnh năm 2000 .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "nước",
+          "tuyên bố",
+          "xóa sổ căn bệnh"
+        ]
+      ]
+    },
+    {
+      "sentence": "Mức thăng , giáng cấp bậc quân hàm sĩ quan Việc thăng hoặc giáng cấp bậc quân hàm sĩ quan mỗi lần chỉ được một bậc ; trường hợp đặc biệt mới thăng hoặc giáng nhiều bậc .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Mức thăng",
+          "cấp bậc",
+          "quân hàm sĩ quan Việc thăng"
+        ]
+      ]
+    },
+    {
+      "sentence": "Việc tiếp nhận được lập biên bản .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Việc tiếp nhận",
+          "được lập",
+          "biên bản"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường hợp có nhiều người thuê vận chuyển mà họ không thỏa thuận được về nơi bốc hàng hoặc khi người thuê vận chuyển không chỉ định rõ nơi bốc hàng thì người vận chuyển đưa tàu biển đến địa điểm được coi là nơi bốc hàng theo tập quán địa phương .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Trường hợp",
+          "có",
+          "nhiều người"
+        ],
+        [
+          "họ",
+          "mà không thỏa thuận được",
+          "về nơi bốc hàng"
+        ],
+        [
+          "người vận chuyển",
+          "thì được coi",
+          "nơi bốc hàng theo tập quán địa phương"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ông Thái nhấn mạnh , trong bối cảnh chuyển đổi số quốc gia và các yêu cầu về phát triển khoa học , công nghệ , giáo dục , đào tạo theo Nghị quyết 57 và 71 , đòi hỏi người kỹ sư quân đội hiện nay không chỉ dừng lại ở chuyên môn thuần túy . \"",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Ông Thái",
+          "nhấn mạnh",
+          "trong bối cảnh chuyển đổi số quốc gia"
+        ]
+      ]
+    },
+    {
+      "sentence": "Mọi người xung quanh tôi đều dùng ChatGPT hoặc Gemini để làm bài tập hoặc để hiểu bài , nhiều đến mức tôi cảm thấy ngu ngốc và tụt hậu nếu không dùng \" , một sinh viên ở Seoul nói .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Mọi người xung quanh tôi",
+          "đều dùng",
+          "ChatGPT"
+        ]
+      ]
+    },
+    {
+      "sentence": "MVP trận đấu Nguyễn Phúc Khôi Nguyên giữ phong độ ổn định ở các cú ném , tạo ra sự khác biệt của trận đấu .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "trận đấu Nguyễn Phúc Khôi",
+          "Nguyên giữ",
+          "phong độ ổn định"
+        ]
+      ]
+    },
+    {
+      "sentence": "Cầu gỗ Phú Kiểng dài 280 m , rộng 1,5 m , bắc qua sông Cái .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Cầu gỗ Phú Kiểng dài",
+          "bắc",
+          "qua sông Cái"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trách nhiệm bồi thường thiệt hại do vi phạm nghĩa vụ Trường hợp có thiệt hại do vi phạm nghĩa vụ gây ra thì bên có nghĩa vụ phải bồi thường toàn bộ thiệt hại , trừ trường hợp có thỏa thuận khác hoặc luật có quy định khác .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Trách nhiệm bồi thường",
+          "thiệt hại",
+          "do vi phạm nghĩa vụ Trường hợp"
+        ],
+        [
+          "bên",
+          "thì có",
+          "nghĩa vụ"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sửa đổi , bổ sung khoản 1 Điều 139 của Bộ luật Lao động số 49/2019 / QH14 đã được sửa đổi , bổ sung theo Luật số 71/2025 / QH15 như sau : “ 1 .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Sửa đổi",
+          "bổ sung",
+          "khoản 1 Điều 139"
+        ]
+      ]
+    },
+    {
+      "sentence": "Về phía giáo viên , AI được thí điểm trong quản lý , hỗ trợ soạn bài và đổi mới phương pháp kiểm tra , đánh giá .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "AI",
+          "được thí điểm",
+          "Về phía giáo viên"
+        ]
+      ]
+    },
+    {
+      "sentence": "Biên bản phải được chuyển ngay cho Điều tra viên để đưa vào hồ sơ vụ án .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Biên bản",
+          "phải được chuyển ngay",
+          "cho Điều tra viên"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trường hợp vụ án có tính chất nghiêm trọng , phức tạp thì Hội đồng xét xử sơ thẩm có thể gồm hai Thẩm phán và ba Hội thẩm .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "phức tạp",
+          "thì có thể gồm",
+          "hai Thẩm phán"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sau khi đấu tranh tâm lý , thầy quay lại trường và vượt lên để trở thành giảng viên .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "thầy",
+          "quay lại",
+          "trường"
+        ]
+      ]
+    },
+    {
+      "sentence": "Khi trả lại đơn yêu cầu và tài liệu , chứng cứ kèm theo , Tòa án phải thông báo bằng văn bản và nêu rõ lý do .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tòa án",
+          "phải thông báo",
+          "bằng văn bản"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bộ Giáo dục Anh tuần trước công bố kế hoạch cải cách hệ thống giáo dục đại học , yêu cầu các trường phải nộp 925 bảng / năm trên mỗi sinh viên quốc tế .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ Giáo dục Anh tuần trước",
+          "công bố",
+          "kế hoạch"
+        ]
+      ]
+    },
+    {
+      "sentence": "Sau khi tốt nghiệp , Thu vẫn dõi theo đội bóng cũ .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thu",
+          "vẫn dõi",
+          "theo đội bóng cũ"
+        ]
+      ]
+    },
+    {
+      "sentence": "Các biện pháp thích ứng với già hóa dân số khác theo quy định của pháp luật có liên quan ; chiến lược , quy hoạch , kế hoạch , chương trình , đề án , dự án phát triển kinh tế - xã hội .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Các biện pháp",
+          "thích ứng",
+          "với già"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tiếp xúc với ánh sáng nhiều giúp em cảm thấy thoải mái hơn trước khi vào học \" , Uyên nói .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tiếp xúc",
+          "nhiều giúp",
+          "em"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bộ không nêu chi tiết , song đánh giá việc sắp xếp theo hướng cơ học sẽ làm mất cân đối quy mô trường lớp , tiềm ẩn nguy cơ quá tải , có thể gây xáo trộn đội ngũ , học sinh , chênh lệch về chất lượng và cơ hội học tập giữa các vùng , miền .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bộ",
+          "không nêu",
+          "chi tiết"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tuy nhiên , Bộ Nội vụ cho rằng lương giáo viên đã cao nhất , nên việc có thêm hệ số đặc thù có thể phá vỡ thiết kế hệ thống tiền lương hiện hành và gây ra bất hợp lý về thu nhập .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "việc",
+          "nên có thêm",
+          "hệ số đặc thù"
+        ]
+      ]
+    },
+    {
+      "sentence": "Khi được chuyển giao nghĩa vụ thì người thế nghĩa vụ trở thành bên có nghĩa vụ .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "thế nghĩa vụ",
+          "thì trở thành",
+          "bên"
+        ]
+      ]
+    },
+    {
+      "sentence": "Gửi quyết định của Tòa án và việc kháng cáo , kháng nghị Việc gửi quyết định của Tòa án ; việc kháng cáo , kháng nghị và xét kháng cáo , kháng nghị được thực hiện theo quy định tại các điều 441 , 442 và 443 của Bộ luật này .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "kháng nghị Việc việc kháng cáo kháng nghị",
+          "được thực hiện",
+          "theo quy định"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tuy nhiên , càng chơi , Bình càng thấy hứng thú .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Bình",
+          "càng thấy",
+          "hứng thú"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ngoài ra , nhiều người được tăng lương nên thưởng tăng \" , lãnh đạo nhà trường chia sẻ .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "người",
+          "được tăng",
+          "lương"
+        ]
+      ]
+    },
+    {
+      "sentence": "Quy định tại khoản 1 Điều này không áp dụng đối với người từ chối nhận di sản theo quy định tại Điều 620 hoặc họ là những người không có quyền hưởng di sản theo quy định tại khoản 1 Điều 621 của Bộ luật này .",
+      "type": "negative",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Quy định",
+          "không áp dụng",
+          "đối với người từ chối"
+        ]
+      ]
+    },
+    {
+      "sentence": "Tập đoàn này nổi tiếng với ứng dụng gọi xe công nghệ , hoạt động tại hơn 70 quốc gia .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Tập đoàn",
+          "nổi tiếng",
+          "với ứng dụng hoạt động tại 70 quốc gia"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nếu tai nạn , sự cố xảy ra tại cảng biển Việt Nam thì kháng nghị hàng hải phải được trình cơ quan có thẩm quyền xác nhận chậm nhất 24 giờ kể từ khi xảy ra tai nạn , sự cố đó .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "sự cố",
+          "Nếu xảy ra",
+          "tai nạn"
+        ],
+        [
+          "kháng nghị hàng hải",
+          "thì phải được trình",
+          "cơ quan"
+        ]
+      ]
+    },
+    {
+      "sentence": "Chỉ định người thừa kế ; truất quyền hưởng di sản của người thừa kế .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chỉ định người thừa kế",
+          "truất",
+          "quyền"
+        ]
+      ]
+    },
+    {
+      "sentence": "Ông Hưng nói 24 năm làm thẩm phán , hôm nay \" vô cùng xấu hổ \" khi đứng ở vị trí ngược lại với vị trí công tác bao năm nay .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Ông Hưng",
+          "nói",
+          "24 năm"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nhưng chấn thương và việc suy giảm thể lực khiến họ thua ngược ở hiệp quyết định .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "chấn thương",
+          "Nhưng khiến",
+          "họ thua ngược"
+        ]
+      ]
+    },
+    {
+      "sentence": "Phần thi thứ ba , thí sinh lựa chọn giữa Khoa học và Tiếng Anh ( 50 câu , 60 phút ) .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "thí sinh",
+          "lựa chọn",
+          "giữa Khoa học"
+        ]
+      ]
+    },
+    {
+      "sentence": "Thủ tục gửi đơn yêu cầu Tòa án xét tính hợp pháp của cuộc đình công Thủ tục gửi đơn , nhận đơn , nghĩa vụ cung cấp tài liệu , chứng cứ đối với việc xét và quyết định về tính hợp pháp của cuộc đình công tại Tòa án được thực hiện theo quy định của Bộ luật này .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Thủ tục",
+          "yêu cầu",
+          "Tòa án xét tính hợp pháp"
+        ]
+      ]
+    },
+    {
+      "sentence": "Trong năm đầu tiên vận hành VEF , tôi đặt mục tiêu đưa 20 người Việt qua Mỹ học tiến sĩ , tăng dần vào năm sau .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "tôi",
+          "đặt",
+          "mục tiêu"
+        ]
+      ]
+    },
+    {
+      "sentence": "Chen tốt nghiệp cử nhân và thạc sĩ ngành khoa học máy tính tại Đại học Thanh Hoa lần lượt vào năm 2004 và 2007 .",
+      "type": "multiple_verbs",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Chen",
+          "tốt nghiệp",
+          "cử nhân"
+        ]
+      ]
+    },
+    {
+      "sentence": "Bà Nguyễn Thị Hạnh - Phó chủ tịch UBND Quảng Ninh cũng cho biết , tỉnh có nhu cầu rất lớn về nguồn nhân lực công nghệ trong giai đoạn hiện nay .",
+      "type": "long_phrase",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "tỉnh",
+          "có",
+          "nhu cầu"
+        ]
+      ]
+    },
+    {
+      "sentence": "Nhóm này thường được ưu tiên tuyển dụng khi có chỉ tiêu .",
+      "type": "simple",
+      "error_field": "multiple",
+      "gold": [],
+      "predicted": [
+        [
+          "Nhóm",
+          "thường được ưu tiên",
+          "tuyển dụng"
+        ]
+      ]
+    }
+  ]
+}
