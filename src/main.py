@@ -26,7 +26,7 @@ from preprocessing import normalize_text, tokenize, duplicate, del_duplicate, em
 import lib
 from data_loader import load_data
 from word_segmetation.segment import segment_text
-from pos_tagging import features, features2, sentfeatures, train_test_valid, train_crf, predict, evaluate_pos
+from pos_tagging import features, features2, sentfeatures, train_test_valid, train_crf, predict, evaluate_pos, make_features, error_analysis
 from rule_extractor import TokenNode, extract_triples_openie
 from evaluator import evaluate_predictions
 from validate_dependency import read_conll
@@ -38,6 +38,7 @@ from validate_dependency import read_conll
 # =====================================================================
 def train_pos_model():
     df = load_data()
+    print("=========CHUẨN HÓA ============")
     #chuẩn hóa
     df["normalize"] = df["text"].map(normalize_text)
     print(df["normalize"])
@@ -52,6 +53,7 @@ def train_pos_model():
     print("Vocabulary size:", len(vocab))
     print("10 từ phổ biến:", word_freq.most_common(10))
 
+    print("========DATA LEAKGAE KIỂM TRA TRÙNG VÀ CỘT RỖNG===========")
     #kiểm tra trùng lặp
     print("Số dòng ban đầu:",len(df))
     dup1 = duplicate(df["text"]) # được một Series có giá trị Bool
@@ -72,23 +74,17 @@ def train_pos_model():
     df["word_segmentation"] = df["text"].map(segment_text)
     lib.display(df.head(10))
 
-
+    print("========SO SÁNH HAI MÔ HÌNH CỬA SỐ +-1 VÀ +-2============")
     #huấn luyện CRF
     #mô hình với cửa sổ là +-1
-    X_train, y_train, X_valid, y_valid, X_test, y_test = train_test_valid(df,features)
+    X_train, y_train, X_valid, y_valid, X_test, y_test = train_test_valid(df,features,False,False)
     print("Số câu train:", len(X_train), len(y_train))
-
-    print("X:", len(X_train[0]))
-    print("y:", len(y_train[0]))
-
-    print("word_segmentation:", df["word_segmentation"].iloc[0])
-    print("upos:", df["upos"].iloc[0])
 
     crf = train_crf(X_train,y_train)
     y_pred = predict(crf,X_test)
 
     #mô hình có thêm đặc trưng cửa sổ là +-2
-    X_train2, y_train2, X_valid2, y_valid2, X_test2, y_test2 = train_test_valid(df,features2)
+    X_train2, y_train2, X_valid2, y_valid2, X_test2, y_test2 = train_test_valid(df,features2,False,False)
     crf2 = train_crf(X_train2,y_train2)
     y_pred2 = predict(crf2,X_test2)
 
@@ -128,88 +124,253 @@ def train_pos_model():
     print(re_compare.round(2).to_string())
 
     lib.display(df1[["accuracy_window1","precision_window1","recall_window1","f1_window1"]])
+    
+    print("==========PHẦN CẢI TIẾN FEATURES===========")
+    #cải tiến
+    #huấn luyện CRF
+    #mô hình với cửa sổ là +-1 (gốc chưa có cải tiến)
+    X_train1, y_train1, X_valid1, y_valid1, X_test1, y_test1 = train_test_valid(df,features,False,False)
+    crf1 = train_crf(X_train1,y_train1)
+    y_pred1 = predict(crf1,X_test1)
+    
+    #huấn luyện CRF
+    #mô hình với cửa sổ là +-1 (có thêm từ láy và từ chức năng)
+    X_train, y_train, X_valid, y_valid, X_test, y_test = train_test_valid(df,features,True,True)
+    crf = train_crf(X_train,y_train)
+    y_pred = predict(crf,X_test)
+    
+    #đánh giá hai mô hình trước và sau khi có cải tiến đặc trưng
+    s_old = evaluate_pos(y_test1,y_pred1)
+    s = evaluate_pos(y_test,y_pred)
+    
+    df_old = lib.pd.DataFrame(s_old).T
+    df_new = lib.pd.DataFrame(s).T
+    #đổi tên cột để phân biệt hai mô hình
+    df_old = df_old.add_suffix("_old")
+    df_new = df_new.add_suffix("_new")
+    # Ghép kết quả theo nhãn POS
+    comparison = lib.pd.concat([df_old, df_new], axis=1)
+    print(comparison.round(2))
+
+    #so sánh 
+    f1_com = comparison[["f1_old", "f1_new"]].copy()
+    f1_com["Chênh lệch f1"] = (f1_com["f1_new"] - f1_com["f1_old"])
+    print(f1_com.round(2).to_string())
+
+    ac_com = comparison[["accuracy_old", "accuracy_new"]].copy()
+    ac_com["Chênh lệch accuracy"] = (ac_com["accuracy_new"] - ac_com["accuracy_old"])
+    print(ac_com.round(2).to_string())
+
+    pre_com = comparison[["precision_old", "precision_new"]].copy()
+    pre_com["Chênh lệch precision"] = (pre_com["precision_new"] - pre_com["precision_old"])
+    print(pre_com.round(2).to_string())
+
+    re_com = comparison[["recall_old", "recall_new"]].copy()
+    re_com["Chênh lệch recall"] = (re_com["recall_new"] - re_com["recall_old"])
+    print(re_com.round(2).to_string())
 
     # Sau khi huấn luyện xong
     MODELS_DIR.mkdir(exist_ok=True)
     lib.joblib.dump(crf, POS_MODEL)
 
-    # Khi chạy giao diện thì mở code này
-    #crf = lib.joblib.load("models/pos_crf.pkl")
+    print("========CÁC LỖI PHỔ BIẾN SAU KHI POS ========")
+    print("KIỂM TRA TRÊN MÔ HÌNH CHƯA CẢI TIẾN FEATURES")
+    error_df1 = error_analysis(X_test1, y_test1, y_pred1)
+    
+    print("\n KIỂM TRA TRÊN MÔ HÌNH ĐÃ CẢI TIẾN FEATURES")
+    error_df = error_analysis(X_test,y_test,y_pred)
+    
+    print("======KIỂM TRA ĐỘ QUAN TRỌNG CỦA TỪNG FEATURES VỚI MÔ HÌNH DỰ ĐOÁN CRF========")
+    #không chuẩn hóa chữ thường 
+    print("Trường hợp không chuẩn hóa từ về chữ thường.")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['token.lower']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
 
-    #Xem các lỗ phổ biến:
-    errors = []
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
 
-    for sent_idx, (X_sent, y_true_sent, y_pred_sent) in enumerate(
-        zip(X_test, y_test, y_pred)
-    ):
-        for token_idx, (feat, gold, pred) in enumerate(
-            zip(X_sent, y_true_sent, y_pred_sent)
-        ):
-            if gold == pred:
-                continue
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
 
-            token = feat.get("token.lower", "")
-            prev = feat.get("prev.lower", "")
-            next_ = feat.get("next.lower", "")
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
 
-            # Nhận diện dạng dữ liệu
-            #có phải dạng số hoặc ngày tháng không
-            is_number_like = bool(
-                lib.re.fullmatch(r"[\d.,/%\-]+", token)
-            )
-            #là viết tắt có chữ cái viết hoa và nhiều hơn 1 ký tự
-            is_viettat = (
-                token.isupper() and len(token) > 1
-            )
-            is_multiword = " " in token
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
 
-            # Gắn các nhóm có thể khảo sát
-            categories = []
-            if is_number_like:
-                categories.append("Dạng số")
-            if is_viettat:
-                categories.append("Chữ viết tắt")
-            if is_multiword:
-                categories.append("Cụm nhiều từ")
-            if token_idx == 0:
-                categories.append("Đầu câu")
-            if token_idx == len(X_sent) - 1:
-                categories.append("Cuối câu")
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không kiểm tra viết hoa cả từ")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['is_upper']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
 
-            errors.append({
-                "sentence_index": sent_idx,
-                "token_index": token_idx,
-                "token": token,
-                "gold": gold,
-                "predicted": pred,
-                "prev": prev,
-                "next": next_,
-                "error_pair": f"{gold} -> {pred}",
-                "categories": categories
-            })
-    error_df = lib.pd.DataFrame(errors)
-    #thống kê các lỗi phổ biến
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
 
-    #Trường hợp những cặp nhãn bị nhầm nhiều nhất
-    print("Các cặp nhãn bị nhầm nhiều nhất:")
-    lib.display(error_df["error_pair"].value_counts().head(10))
-    #Trường hợp các từ bị nhầm nhiều nhất
-    print("Các token bị nhầm nhiều nhất:")
-    lib.display(error_df["token"].value_counts().head(10))
-    #trường hợp các nhóm lỗi được gắn nhãn theo hình thức/vị trí
-    category_counts = lib.Counter(
-        category
-        for categories in error_df["categories"]
-        for category in categories
-    )
-    print("Số lỗi thuộc từng nhóm khảo sát:")
-    lib.display(lib.pd.DataFrame(
-        category_counts.items(),
-        columns=["Nhóm lỗi", "Số token lỗi"]
-    ).sort_values("Số token lỗi", ascending=False))
-    print("Tổng số token dự đoán sai:", len(error_df))
-    lib.display(error_df)
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
 
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không kiểm tra chữ đầu")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['is_title']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
+
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
+
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
+
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không kiểm tra là số")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['is_digit']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
+
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
+
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
+
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không kiểm tra features là dấu cấu hay không")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['is_punct']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
+
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
+
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
+
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không có features độ dài từ")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['length']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
+
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
+
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
+
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
+    print("Trường hợp không có ngữ cảnh trước và sau")
+    X_train_t, y_train_t, X_valid_t, y_valid_t, X_test_t, y_test_t = train_test_valid(df,make_features(['prev.lower','next.lower']),True,True) 
+    crf_t = train_crf(X_train_t,y_train_t)
+    y_pred_t = predict(crf_t,X_test_t)
+
+    s_t = evaluate_pos(y_test_t,y_pred_t)
+    df_t = lib.pd.DataFrame(s_t).T
+    df_t = df_t.add_suffix("_t")
+    
+    comparison_t = lib.pd.concat([df_t, df_new], axis=1)
+    f1_t = comparison_t[["f1_t", "f1_new"]].copy()
+    f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
+    print(f1_t.round(2).to_string())
+
+    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
+    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
+    print(ac_t.round(2).to_string())
+
+    pre_t = comparison_t[["precision_t", "precision_new"]].copy()
+    pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
+    print(pre_t.round(2).to_string())
+
+    re_t = comparison_t[["recall_t", "recall_new"]].copy()
+    re_t["Chênh lệch recall"] = (re_t["recall_new"] - re_t["recall_t"])
+    print(re_t.round(2).to_string())
+    #error_t = error_analysis(X_test_t,y_test_t,y_pred_t)
+    
     return crf
 
 

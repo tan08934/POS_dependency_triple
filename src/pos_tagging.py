@@ -17,7 +17,8 @@ def is_punct(word):
 #tìm đặc trưng ngữ cảnh và bề mặt
 #hàm đặc trưng này ở phần ngữ cảnh cửa số hiện tại là +-1
 #đầu vào là xét một câu với vị trí của từ trong câu
-def features(sent, i):
+#cải tiến: dùng từ láy và từ chức năng trong tiếng việt
+def features(sent, i, use_syllables = True, use_affix=True):
     token = sent[i] #lấy token
     low = token.lower()#chữ thường
     #tạo đict chứa đặc trưng
@@ -42,13 +43,32 @@ def features(sent, i):
     else: #nếu đúng là cuối câu
         #thêm vào dict key EOS
         feats["EOS"] = True # EOS-End OF Sentence, token đứng cuối câu.
+    if use_syllables:
+        syllable = low.split() #tìm các dạng từ láy có hai từ giống nhau: xanh xanh, đều đều, người người,...
+        feats["syllables"] = syllable
+        #them tiền tố hậu tố trong từ
+    if use_affix:
+        w = low.split()
+        feats["prefix"] = (w[0] if w else "")
+        feats["suffix"] = (w[-1] if w else "")
     return feats 
 # trả về cái dict feature của một token.
 
+#hàm bỏ lần lượt các feature để kiểm tra độ quan trọng của từng feature tới model
+def make_features(remove_features=None):
+    remove_features = list(remove_features or [])
+    def configured_features( sent, i,use_syllables=True,use_affix = True):
+        feats = features(sent, i,use_syllables,use_affix)
+        for feature in remove_features:
+            feats.pop(feature, None)
+        return feats
+    return configured_features
+#đầu ra là dict features mới đã bỏ bớt features để test
+
 #hàm đặc trưng thử với cửa sổ là +-2
-def features2(sent, i):
+def features2(sent, i,use_syllables = True, use_affix =True):
     token = sent[i] #lấy token
-    feats = features(sent,i)
+    feats = features(sent,i,use_syllables,use_affix)
     #feature về ngữ cảnh
     if i > 0: #nếu không phải vị trí đầu câu
         #thêm vào dict key pre.lower
@@ -60,8 +80,8 @@ def features2(sent, i):
 #đầu ra là dict featurs có thêm ngữ cảnh khi tăng cửa sổ lên +-2
 
 #áp dụng hàm đặc trưng 
-def sentfeatures(sent, features_fn): #bỏ vào danh sách tokens với hàm tạo feature cho token
-    return [features_fn(sent, i) for i in range(len(sent))] #mỗi từ có 1 dict feats, các dict này nằm trong 1 danh sách ứng với 1 câu
+def sentfeatures(sent, features_fn, use_syllables = True, use_affix = True): #bỏ vào danh sách tokens với hàm tạo feature cho token
+    return [features_fn(sent, i,use_syllables, use_affix) for i in range(len(sent))] #mỗi từ có 1 dict feats, các dict này nằm trong 1 danh sách ứng với 1 câu
 #chia tập train valid test
 #do df có upos đọc thành kiểu string, chuẩn về danh sách để tránh đọc từng ký tự, không khớp với nhãn được
 #đầu vào là chuỗi danh sách nhãn của một câu
@@ -76,7 +96,7 @@ def parse_labels(value):
 # trả về nội dung danh sách bên trong.
 
 #đầu vào là dataframe
-def train_test_valid(df, features_fn):
+def train_test_valid(df, features_fn,use_syllables = True, use_affix = True):
     train_df, temp_df = lib.train_test_split(
         df, 
         test_size=0.2, 
@@ -86,11 +106,11 @@ def train_test_valid(df, features_fn):
         test_size=0.5, 
         random_state=42) #chia 50 50 cho valid với test
 
-    X_train = [sentfeatures(words, features_fn) for words in train_df["word_segmentation"]] # duyệt qua mỗi danh sashc, với mỗi danh sách tương ứng một câu, trong đó có các từ, danh sách features mỗi câu trong train_data
+    X_train = [sentfeatures(words, features_fn,use_syllables, use_affix) for words in train_df["word_segmentation"]] # duyệt qua mỗi danh sashc, với mỗi danh sách tương ứng một câu, trong đó có các từ, danh sách features mỗi câu trong train_data
     y_train = [parse_labels(labels) for labels in train_df["upos"]] # danh sách label của từng câu tương ứng trong train data
-    X_valid = [sentfeatures(words, features_fn) for words in valid_df["word_segmentation"]]
+    X_valid = [sentfeatures(words, features_fn,use_syllables, use_affix) for words in valid_df["word_segmentation"]]
     y_valid = [parse_labels(labels) for labels in valid_df["upos"]]
-    X_test = [sentfeatures(words, features_fn) for words in test_df["word_segmentation"]]# tương tự nhưng là test_Data
+    X_test = [sentfeatures(words, features_fn,use_syllables, use_affix) for words in test_df["word_segmentation"]]# tương tự nhưng là test_Data
     y_test = [parse_labels(labels) for labels in test_df["upos"]]# ds nhãn test_data
     
     return X_train, y_train, X_valid, y_valid, X_test, y_test
@@ -158,3 +178,91 @@ def evaluate_pos(y_true, y_pred):
 #trả về các thông số kết quả metrics
 
 #phân tích lỗi kiểm tra các trương hợp lỗi nhiều nhất
+#hàm kiểm tra lỗi phổ biến của pos
+def error_analysis(X_test, y_test, y_pred):
+    # Xem các lỗi phổ biến
+    errors = []
+
+    for sent_idx, (X_sent, y_true_sent, y_pred_sent) in enumerate(
+        zip(X_test, y_test, y_pred)
+    ):
+        for token_idx, (feat1, gold1, pred1) in enumerate(
+            zip(X_sent, y_true_sent, y_pred_sent)
+        ):
+            if gold1 == pred1:
+                continue
+
+            token = feat1.get("token.lower", "")
+            prev = feat1.get("prev.lower", "")
+            next_ = feat1.get("next.lower", "")
+
+            # Nhận diện dạng dữ liệu
+            # Có phải dạng số hoặc ngày tháng không
+            is_number_like = bool(
+                lib.re.fullmatch(r"[\d.,/%\-]+", token)
+            )
+
+            # Là viết tắt có chữ cái viết hoa và nhiều hơn 1 ký tự
+            is_viettat = token.isupper() and len(token) > 1
+
+            is_multiword = " " in token
+
+            # Gắn các nhóm có thể khảo sát
+            categories = []
+
+            if is_number_like:
+                categories.append("Dạng số")
+            if is_viettat:
+                categories.append("Chữ viết tắt")
+            if is_multiword:
+                categories.append("Cụm nhiều từ")
+            if token_idx == 0:
+                categories.append("Đầu câu")
+            if token_idx == len(X_sent) - 1:
+                categories.append("Cuối câu")
+
+            errors.append({
+                "sentence_index": sent_idx,
+                "token_index": token_idx,
+                "token": token,
+                "gold": gold1,
+                "predicted": pred1,
+                "prev": prev,
+                "next": next_,
+                "error_pair": f"{gold1} -> {pred1}",
+                "categories": categories
+            })
+
+    error_df = lib.pd.DataFrame(errors)
+
+    if error_df.empty:
+        print("Không có token nào được dự đoán sai.")
+        return error_df
+
+    # Các cặp nhãn bị nhầm nhiều nhất
+    print("Các cặp nhãn bị nhầm nhiều nhất:")
+    lib.display(error_df["error_pair"].value_counts().head(10))
+
+    # Các token bị nhầm nhiều nhất
+    print("Các token bị nhầm nhiều nhất:")
+    lib.display(error_df["token"].value_counts().head(10))
+
+    # Thống kê các nhóm lỗi
+    category_counts = lib.Counter(
+        category
+        for categories in error_df["categories"]
+        for category in categories
+    )
+
+    print("Số lỗi thuộc từng nhóm khảo sát:")
+    lib.display(
+        lib.pd.DataFrame(
+            category_counts.items(),
+            columns=["Nhóm lỗi", "Số token lỗi"]
+        ).sort_values("Số token lỗi", ascending=False)
+    )
+
+    print("Tổng số token dự đoán sai:", len(error_df))
+    lib.display(error_df)
+
+    return error_df
