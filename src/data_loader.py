@@ -18,8 +18,6 @@ def load_data():
     # deprel: quan hệ cú pháp giữa token và head
     df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
     lib.display(df.columns.tolist())
-    # tận 20000 câu
-    df = df.head(200) # lấy mẫu nhỏ hơn
     return df
 
 
