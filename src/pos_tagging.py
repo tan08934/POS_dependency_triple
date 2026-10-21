@@ -97,14 +97,9 @@ def parse_labels(value):
 
 #đầu vào là dataframe
 def train_test_valid(df, features_fn,use_syllables = True, use_affix = True):
-    train_df, temp_df = lib.train_test_split(
-        df, 
-        test_size=0.2, 
-        random_state=42) #chia 80-20
-    valid_df, test_df = lib.train_test_split(
-        temp_df, 
-        test_size=0.5, 
-        random_state=42) #chia 50 50 cho valid với test
+    test_df = df.iloc[:200] # 200 câu đầu
+    valid_df = df.iloc[200:400]
+    train_df = df.iloc[400:]
 
     X_train = [sentfeatures(words, features_fn,use_syllables, use_affix) for words in train_df["word_segmentation"]] # duyệt qua mỗi danh sashc, với mỗi danh sách tương ứng một câu, trong đó có các từ, danh sách features mỗi câu trong train_data
     y_train = [parse_labels(labels) for labels in train_df["upos"]] # danh sách label của từng câu tương ứng trong train data
