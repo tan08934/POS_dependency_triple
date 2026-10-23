@@ -1,45 +1,34 @@
 import csv
 import json
 import os
-import shutil
 
 def convert_csv_to_json():
-    # Danh sách các đường dẫn file CSV có thể nằm trong dự án
-    possible_paths = [
-        'data/UDD-1.csv',
-        'UDD-1.csv',
-        'UDD.csv',
-        'data/UDD.csv',
-        'data/gold_manual.csv',
-        'gold_manual.csv'
-    ]
+    # Đường dẫn file CSV chính theo cấu trúc An thông báo
+    csv_path = 'data/UDD-1.csv'
+    json_path = 'data/gold_annotated.json'
 
-    csv_path = None
-    for path in possible_paths:
-        if os.path.exists(path):
-            csv_path = path
-            break
+    # Tìm kiếm linh hoạt các vị trí file dự phòng nếu chưa di chuyển
+    if not os.path.exists(csv_path):
+        fallback_paths = ['UDD-1.csv', 'data/UDD.csv', 'UDD.csv', 'data/gold_manual.csv']
+        for p in fallback_paths:
+            if os.path.exists(p):
+                csv_path = p
+                break
 
-    if not csv_path:
-        print("❌ Không tìm thấy file CSV nào trong dự án!")
-        return []
+    if not os.path.exists(csv_path):
+        print(f"❌ Không tìm thấy file CSV tại: {csv_path}")
+        return
 
     print(f"📖 Đang đọc dữ liệu từ: {csv_path}")
-    
-    # Đảm bảo tạo file data/UDD-1.csv để đáp ứng đúng yêu cầu của An
-    os.makedirs('data', exist_ok=True)
-    target_udd = 'data/UDD-1.csv'
-    if csv_path != target_udd and not os.path.exists(target_udd):
-        shutil.copy(csv_path, target_udd)
-        print(f"✅ Đã tự động tạo file chuẩn: {target_udd}")
-
     dataset = []
+
     with open(csv_path, 'r', encoding='utf-8-sig', errors='ignore') as f:
         lines = f.readlines()
         if not lines:
             print("❌ File CSV rỗng!")
-            return []
+            return
 
+        # Tự động phát hiện dấu phân cách (chủ yếu là ';')
         first_content = "".join(lines[:10])
         delimiter = ';' if ';' in first_content else ','
 
@@ -83,13 +72,12 @@ def convert_csv_to_json():
                         "gold_triples": gold_triples
                     })
 
-    json_path = 'data/gold_annotated.json'
+    os.makedirs('data', exist_ok=True)
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(dataset, f, ensure_ascii=False, indent=2)
 
     print(f"🎉 Đã chuyển đổi thành công {len(dataset)} câu sang JSON!")
     print(f"📁 File JSON đã lưu tại: {json_path}")
-    return dataset
 
 if __name__ == "__main__":
     convert_csv_to_json()
