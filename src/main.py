@@ -517,23 +517,38 @@ def main(text, crf=None):
     }
 
 
-def evaluate_triples(crf, match_mode="exact"):
-    """Chạy pipeline trên data/dataset_test.json rồi chấm bằng evaluator.py."""
-    with (DATA_DIR / "dataset_test.json").open(encoding="utf-8") as f:
+def evaluate_triples(crf=None, gold_path=None, match_mode="exact"):
+    """Chạy pipeline trên data/gold_annotated.json (hoặc dataset_test.json) rồi chấm bằng evaluator.py."""
+    crf = crf or load_pos_model()
+    
+    if gold_path is None:
+        gold_file = DATA_DIR / "gold_annotated.json"
+        if not gold_file.exists():
+            gold_file = DATA_DIR / "dataset_test.json"
+    else:
+        gold_file = Path(gold_path)
+
+    if not gold_file.exists():
+        raise FileNotFoundError(f"Không tìm thấy file dữ liệu gold tại {gold_file}")
+
+    print(f"📖 Đang đọc tập dữ liệu kiểm thử từ: {gold_file}")
+    with gold_file.open(encoding="utf-8") as f:
         dataset = json.load(f)
-    tagged = [tag_sentence(item["sentence"], crf) for item in dataset]
+
+    tagged = [tag_sentence(item.get("sentence", item.get("text", "")), crf) for item in dataset]
     parsed = parse_dependencies(tagged)
     results = [{
-        "sentence": item["sentence"],
+        "sentence": item.get("sentence", item.get("text", "")),
         "type": item.get("type", ""),
-        "gold_triples": item["gold_triples"],
+        "gold_triples": item.get("gold_triples", []),
         "predicted_triples": extract_triples_openie(nodes),
     } for item, nodes in zip(dataset, parsed)]
+
     report = evaluate_predictions(results, match_mode=match_mode)
     out = DATA_DIR / "triple_evaluation.json"
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({k: v for k, v in report.items() if k != "error_logs"}, ensure_ascii=False, indent=2))
-    print("Đã lưu:", out.resolve())
+    print("Đã lưu kết quả tại:", out.resolve())
     return report
 
 
