@@ -1,50 +1,95 @@
 import csv
 import json
 import os
+import shutil
 
 def convert_csv_to_json():
-    # 1. Khai báo đường dẫn file trong thư mục data/
-    csv_path = 'data/gold_manual.csv'
-    json_path = 'data/gold_annotated.json'
+    # Danh sách các đường dẫn file CSV có thể nằm trong dự án
+    possible_paths = [
+        'data/UDD-1.csv',
+        'UDD-1.csv',
+        'UDD.csv',
+        'data/UDD.csv',
+        'data/gold_manual.csv',
+        'gold_manual.csv'
+    ]
 
-    if not os.path.exists(csv_path):
-        print(f"Không tìm thấy file: {csv_path}")
-        return
+    csv_path = None
+    for path in possible_paths:
+        if os.path.exists(path):
+            csv_path = path
+            break
+
+    if not csv_path:
+        print("❌ Không tìm thấy file CSV nào trong dự án!")
+        return []
+
+    print(f"📖 Đang đọc dữ liệu từ: {csv_path}")
+    
+    # Đảm bảo tạo file data/UDD-1.csv để đáp ứng đúng yêu cầu của An
+    os.makedirs('data', exist_ok=True)
+    target_udd = 'data/UDD-1.csv'
+    if csv_path != target_udd and not os.path.exists(target_udd):
+        shutil.copy(csv_path, target_udd)
+        print(f"✅ Đã tự động tạo file chuẩn: {target_udd}")
 
     dataset = []
-    with open(csv_path, 'r', encoding='utf-8-sig') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            sentence = row.get('sentence', row.get('text', '')).strip()
-            sent_type = row.get('type', 'simple').strip()
-            raw_triples = row.get('gold_triples_text', '').strip()
+    with open(csv_path, 'r', encoding='utf-8-sig', errors='ignore') as f:
+        lines = f.readlines()
+        if not lines:
+            print("❌ File CSV rỗng!")
+            return []
 
-            # Bỏ qua những dòng chưa gán nhãn hoặc trống
-            if not sentence or not raw_triples:
+        first_content = "".join(lines[:10])
+        delimiter = ';' if ';' in first_content else ','
+
+        reader = csv.reader(lines, delimiter=delimiter)
+        header = None
+
+        for row in reader:
+            if not row or not any(row):
                 continue
 
-            # Tách chuỗi | và ; thành dạng mảng JSON
-            gold_triples = []
-            for t_str in raw_triples.split(';'):
-                parts = [p.strip() for p in t_str.split('|')]
-                if len(parts) == 3:
-                    gold_triples.append(parts)
+            row_lower = [str(c).strip().lower() for c in row]
+            if 'sent_id' in row_lower and 'text' in row_lower:
+                header = row_lower
+                continue
 
-            dataset.append({
-                "id": int(row.get('id', len(dataset) + 1)),
-                "sent_id": row.get('sent_id', ''),
-                "sentence": sentence,
-                "type": sent_type if sent_type else "simple",
-                "gold_triples": gold_triples
-            })
+            if header and len(row) >= len(header):
+                row_dict = dict(zip(header, [str(c).strip() for c in row]))
+                sent_id = row_dict.get('sent_id', '')
+                sentence = row_dict.get('text', '') or row_dict.get('sentence', '')
+                sent_type = row_dict.get('type', 'simple')
+                raw_triples = row_dict.get('gold_triples_text', '') or row_dict.get('gold_triples', '')
 
-    # 2. Đảm bảo thư mục data/ tồn tại và ghi file JSON
-    os.makedirs('data', exist_ok=True)
+                if not sentence or not raw_triples:
+                    continue
+
+                gold_triples = []
+                for t_str in raw_triples.split(';'):
+                    t_str = t_str.strip()
+                    if not t_str:
+                        continue
+                    parts = [p.strip() for p in t_str.split('|')]
+                    if len(parts) == 3:
+                        gold_triples.append(parts)
+
+                if gold_triples:
+                    dataset.append({
+                        "id": len(dataset) + 1,
+                        "sent_id": sent_id,
+                        "sentence": sentence,
+                        "type": sent_type if sent_type else "simple",
+                        "gold_triples": gold_triples
+                    })
+
+    json_path = 'data/gold_annotated.json'
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(dataset, f, ensure_ascii=False, indent=2)
 
-    print(f" Đã chuyển đổi thành công {len(dataset)} câu!")
-    print(f" File JSON đã lưu tại: {json_path}")
+    print(f"🎉 Đã chuyển đổi thành công {len(dataset)} câu sang JSON!")
+    print(f"📁 File JSON đã lưu tại: {json_path}")
+    return dataset
 
 if __name__ == "__main__":
     convert_csv_to_json()
