@@ -16,7 +16,7 @@ def convert_csv_to_json():
                 break
 
     if not os.path.exists(csv_path):
-        print(f"❌ Không tìm thấy file CSV tại: {csv_path}")
+        print(f" Không tìm thấy file CSV tại: {csv_path}")
         return
 
     print(f"📖 Đang đọc dữ liệu từ: {csv_path}")
@@ -25,7 +25,7 @@ def convert_csv_to_json():
     with open(csv_path, 'r', encoding='utf-8-sig', errors='ignore') as f:
         lines = f.readlines()
         if not lines:
-            print("❌ File CSV rỗng!")
+            print(" File CSV rỗng!")
             return
 
         # Tự động phát hiện dấu phân cách (chủ yếu là ';')
@@ -76,8 +76,8 @@ def convert_csv_to_json():
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(dataset, f, ensure_ascii=False, indent=2)
 
-    print(f"🎉 Đã chuyển đổi thành công {len(dataset)} câu sang JSON!")
-    print(f"📁 File JSON đã lưu tại: {json_path}")
+    print(f" Đã chuyển đổi thành công {len(dataset)} câu sang JSON!")
+    print(f" File JSON đã lưu tại: {json_path}")
 
 if __name__ == "__main__":
     convert_csv_to_json()
