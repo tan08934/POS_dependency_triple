@@ -95,11 +95,19 @@ def parse_labels(value):
 # lấy phần nội dung bên trong không bao gồm dấu nháy ([^'"]*)
 # trả về nội dung danh sách bên trong.
 
+#dùng chung cả pipeline
+def split_dataset(df):
+    test_df = df.iloc[:2000].copy() # 2000 câu đầu
+    valid_df = df.iloc[2000:4000].copy()
+    train_df = df.iloc[4000:].copy()
+    return test_df,valid_df,train_df
+
 #đầu vào là dataframe
 def train_test_valid(df, features_fn,use_syllables = True, use_affix = True):
-    test_df = df.iloc[:200] # 200 câu đầu
-    valid_df = df.iloc[200:400]
-    train_df = df.iloc[400:]
+    test_df = df.iloc[:2000].copy() # 2000 câu đầu
+    valid_df = df.iloc[2000:4000].copy()
+    train_df = df.iloc[4000:].copy()
+    #không làm thay dổi dữ liệu gốc.
 
     X_train = [sentfeatures(words, features_fn,use_syllables, use_affix) for words in train_df["word_segmentation"]] # duyệt qua mỗi danh sashc, với mỗi danh sách tương ứng một câu, trong đó có các từ, danh sách features mỗi câu trong train_data
     y_train = [parse_labels(labels) for labels in train_df["upos"]] # danh sách label của từng câu tương ứng trong train data
@@ -160,7 +168,7 @@ def evaluate_pos(y_true, y_pred):
         fp = int(cm[:, i].sum() - tp) # lấy các giá trị nhãn chuẩn khác với nhãn dự đoán trừ đi giá trị nhãn đúng của mỗi cột đó.
         tn = int(total - tp - fn - fp) # lấy tổng số các nhãn trừ đi nhãn khớp chuẩn, nhãn không khớp chuẩn với chuẩn khác nhãn là được
 
-        metrics = calculate_metrics(tp, fp, fn)
+        metrics = calculate_metrics(tp,tn, fp, fn)
 
         results[label] = {
             "TP": tp,

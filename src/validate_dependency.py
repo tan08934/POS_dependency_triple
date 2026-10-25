@@ -30,7 +30,7 @@ def read_conll(path):
         sentences.append(current)
     return sentences
 
-
+#phát hiện các câu phủ định, câu bị động và câu nhiều mệnh đề hoặc nhiều động từ
 def sentence_type(text, n_tokens):
     lower = text.lower()
     labels = []
@@ -109,7 +109,7 @@ def inspect_sentence(rows):
 
     return tokens, errors
 
-
+#đầu vào là file chưa kết quả phân tích dependency của maltparser: dependency_predictions.conll
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True, help="File đầu ra MaltParser (.conll)")
@@ -160,7 +160,7 @@ def main():
     print(f"JSONL: {json_path.resolve()}")
     print(f"Structural errors: {len(error_rows)} -> {error_path.resolve()}")
     print("Lưu ý: kiểm tra cấu trúc không thay thế việc rà soát ngữ nghĩa thủ công.")
-
+# sau khi kiểm tra định dạng, trả về dependency_results.jsonl và dependency_errors.csv chưa các danh sách lỗi cấu trúc được phát hiện để rà soát.
 
 if __name__ == "__main__":
     main()

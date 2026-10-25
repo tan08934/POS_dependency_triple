@@ -34,9 +34,8 @@ from validate_dependency import read_conll
 
 # =====================================================================
 # BƯỚC 1 - POS: toàn bộ code huấn luyện/đánh giá CRF cũ, bọc vào hàm
-# (trước đây chạy ngay khi import nên không gọi main() từ giao diện được)
 # =====================================================================
-def train_pos_model():
+def prepared_df():
     df = load_data()
     print("=========CHUẨN HÓA ============")
     #chuẩn hóa
@@ -69,7 +68,10 @@ def train_pos_model():
     print(df["upos"])
     print(type(df.loc[0, "upos"]))
     print(len(df.loc[0, "upos"]))
+    return df
 
+def crf_analysis ():
+    df = prepared_df()
     #tách từ
     df["word_segmentation"] = df["text"].map(segment_text)
     lib.display(df.head(10))
@@ -111,10 +113,6 @@ def train_pos_model():
     f1_compare["Chênh lệch f1"] = (f1_compare["f1_window2"] - f1_compare["f1_window1"])
     print(f1_compare.round(2).to_string())
 
-    ac_compare = comparison[["accuracy_window1", "accuracy_window2"]].copy()
-    ac_compare["Chênh lệch accuracy"] = (ac_compare["accuracy_window2"] - ac_compare["accuracy_window1"])
-    print(ac_compare.round(2).to_string())
-
     pre_compare = comparison[["precision_window1", "precision_window2"]].copy()
     pre_compare["Chênh lệch precision"] = (pre_compare["precision_window2"] - pre_compare["precision_window1"])
     print(pre_compare.round(2).to_string())
@@ -123,7 +121,7 @@ def train_pos_model():
     re_compare["Chênh lệch recall"] = (re_compare["recall_window2"] - re_compare["recall_window1"])
     print(re_compare.round(2).to_string())
 
-    lib.display(df1[["accuracy_window1","precision_window1","recall_window1","f1_window1"]])
+    lib.display(df1[["precision_window1","recall_window1","f1_window1"]])
     
     print("==========PHẦN CẢI TIẾN FEATURES===========")
     #cải tiến
@@ -156,10 +154,6 @@ def train_pos_model():
     f1_com = comparison[["f1_old", "f1_new"]].copy()
     f1_com["Chênh lệch f1"] = (f1_com["f1_new"] - f1_com["f1_old"])
     print(f1_com.round(2).to_string())
-
-    ac_com = comparison[["accuracy_old", "accuracy_new"]].copy()
-    ac_com["Chênh lệch accuracy"] = (ac_com["accuracy_new"] - ac_com["accuracy_old"])
-    print(ac_com.round(2).to_string())
 
     pre_com = comparison[["precision_old", "precision_new"]].copy()
     pre_com["Chênh lệch precision"] = (pre_com["precision_new"] - pre_com["precision_old"])
@@ -196,10 +190,6 @@ def train_pos_model():
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
 
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
-
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
     print(pre_t.round(2).to_string())
@@ -222,10 +212,6 @@ def train_pos_model():
     f1_t = comparison_t[["f1_t", "f1_new"]].copy()
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
-
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
 
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
@@ -250,10 +236,6 @@ def train_pos_model():
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
 
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
-
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
     print(pre_t.round(2).to_string())
@@ -276,10 +258,6 @@ def train_pos_model():
     f1_t = comparison_t[["f1_t", "f1_new"]].copy()
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
-
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
 
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
@@ -304,10 +282,6 @@ def train_pos_model():
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
 
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
-
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
     print(pre_t.round(2).to_string())
@@ -330,10 +304,6 @@ def train_pos_model():
     f1_t = comparison_t[["f1_t", "f1_new"]].copy()
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
-
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
 
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
@@ -358,10 +328,6 @@ def train_pos_model():
     f1_t["Chênh lệch f1"] = (f1_t["f1_new"] - f1_t["f1_t"])
     print(f1_t.round(2).to_string())
 
-    ac_t = comparison_t[["accuracy_t", "accuracy_new"]].copy()
-    ac_t["Chênh lệch accuracy"] = (ac_t["accuracy_new"] - ac_t["accuracy_t"])
-    print(ac_t.round(2).to_string())
-
     pre_t = comparison_t[["precision_t", "precision_new"]].copy()
     pre_t["Chênh lệch precision"] = (pre_t["precision_new"] - pre_t["precision_t"])
     print(pre_t.round(2).to_string())
@@ -373,16 +339,18 @@ def train_pos_model():
     
     return crf
 
-
+#nạp mô hình pos crf từ file pos_crf.pkl lưu trên máy
 def load_pos_model():
     if not POS_MODEL.exists():
         raise FileNotFoundError(f"Chưa có {POS_MODEL}. Chạy train_pos_model() hoặc bỏ cờ --skip-pos-train.")
     return lib.joblib.load(POS_MODEL)
+# được mô hình pos đã train
 
 
 # =====================================================================
 # BƯỚC 2 - Dependency theo lô: các script README "Bước 1-3" chạy lần lượt
 # =====================================================================
+#Chuyển đường dẫn thành đường dẫn tương đối 
 def rel(path):
     """Đường dẫn tương đối so với thư mục gốc (các script chạy với cwd=ROOT_DIR như README)."""
     try:
@@ -390,20 +358,20 @@ def rel(path):
     except ValueError:
         return str(path)
 
-
+#dùng để chạy file python khác như một tiến trình riêng
 def run_script(script, *args):
     cmd = [sys.executable, str(SRC_DIR / script), *[str(a) for a in args]]
     print(">>", " ".join(cmd))
     subprocess.run(cmd, cwd=ROOT_DIR, check=True)
 
-
+#tìm file UDD-1.csv 
 def find_udd_csv():
     for p in (SRC_DIR / "UDD-1.csv", DATA_DIR / "UDD-1.csv", ROOT_DIR / "UDD-1.csv"):
         if p.exists():
             return p
     raise FileNotFoundError("Không tìm thấy UDD-1.csv (đã tìm trong src/, data/ và thư mục gốc).")
 
-
+#đảm bảo bộ cung cụ MaltParser đã có file .jar cần thiết để chạy
 def ensure_maltparser():
     if MALT_JAR.exists():
         return
@@ -414,13 +382,15 @@ def ensure_maltparser():
     if not MALT_JAR.exists():
         raise FileNotFoundError(f"Không tìm thấy {MALT_JAR}. Xem README mục 3.3 để tải MaltParser.")
 
-
+#chạy dependency theo pipeline
+#đầu vào nếu là True thì phải huấn luyện lại MaltParser
+#False thì có mô hình rồi, không cần huấn luyện lại nữa
 def run_dependency_pipeline(retrain=False):
     ensure_maltparser()
     jar = rel(MALT_JAR)
 
     # Bước 1: UDD-1.csv -> train.conll, test.conll, input_pos.csv
-    run_script("csv_to_conll.py", "--input", rel(find_udd_csv()), "--outdir", "data")
+    run_script("csv_to_conll.py", "--outdir", "data")
 
     # Bước 2: huấn luyện MaltParser (bỏ qua nếu đã có model)
     if retrain or not MALT_MODEL.exists():
@@ -428,70 +398,133 @@ def run_dependency_pipeline(retrain=False):
     else:
         print(f"Đã có {rel(MALT_MODEL)}, bỏ qua huấn luyện (dùng --retrain-malt để train lại).")
 
-    # Bước 3: input -> dự đoán -> kiểm tra cấu trúc -> đánh giá UAS/LAS
-    run_script("prepare_malt_input.py", "--input", "data/input_pos.csv", "--output", "data/malt_input.conll")
-    run_script("run_maltparser.py", "--jar", jar, "--model", rel(MALT_MODEL),
-               "--input", "data/malt_input.conll", "--output", "data/dependency_predictions.conll")
-    run_script("validate_dependency.py", "--input", "data/dependency_predictions.conll")
-    run_script("evaluate_dependency.py", "--gold", "data/test.conll", "--pred", "data/dependency_predictions.conll")
+    # Bước 3: Dùng CRF dự đoán POS và tạo đầu vào MaltParser.
+    # Nạp CRF vào rồi dùng nó dự đoán pos trên các token của tập test.
+    run_script("prepare_malt_input.py","--test-gold", "data/test.conll","--output", "data/malt_input.conll")
+    # Bước 4: Dùng MaltParser dự đoán dependency.
+    #đọc file ở trên rồi dự đoán
+    run_script("run_maltparser.py","--jar", jar,"--model", rel(MALT_MODEL),"--input", "data/malt_input.conll","--output", "data/dependency_predictions.conll")
+    # Bước 5: Kiểm tra cấu trúc dependency dự đoán.
+    run_script("validate_dependency.py","--input", "data/dependency_predictions.conll")
+    # Bước 6: Đánh giá UAS/LAS bằng dependency Gold của tập test.
+    run_script("evaluate_dependency.py","--gold", "data/test.conll","--pred", "data/dependency_predictions.conll")
 
 
 # =====================================================================
 # BƯỚC 3 - Dùng pipeline cho câu mới: POS -> MaltParser -> bộ ba
 # =====================================================================
-_UPOS2XPOS = None
-
-
-def upos_to_xpos():
-    """MaltParser được train với CPOSTAG=upos, POSTAG=xpos (train.conll).
-    CRF chỉ dự đoán upos nên lấy xpos phổ biến nhất của mỗi upos trong train.conll."""
-    global _UPOS2XPOS
-    if _UPOS2XPOS is None:
-        counts = {}
-        train = DATA_DIR / "train.conll"
-        if train.exists():
-            with train.open(encoding="utf-8") as f:
-                for line in f:
-                    cols = line.rstrip("\n").split("\t")
-                    if len(cols) >= 5:
-                        counts.setdefault(cols[3], Counter())[cols[4]] += 1
-        _UPOS2XPOS = {u: c.most_common(1)[0][0] for u, c in counts.items()}
-    return _UPOS2XPOS
-
+#
 
 def tag_sentence(text, crf):
-    """Tách từ + gán POS (cùng cách tách từ như lúc huấn luyện CRF: segment_text trên câu gốc)."""
+    """Tiền xử lý, tách từ và gán UPOS cho một câu."""
     if not isinstance(text, str) or not text.strip():
-        raise ValueError("Vui lòng nhập vào một câu tiếng Việt.")
-    text = preprocess_data(text)
-    tokens = segment_text(text)
-    X = sentfeatures(tokens, features)
-    return tokens, predict(crf, [X])[0]
-#do predict nhiều câu, lấy đúng câu mình thả vào thôi
+        raise ValueError(f"Câu đầu vào rỗng hoặc không hợp lệ: {text!r}")
 
+    processed = segment_text(text)
+        
+
+    # preprocess_data đã trả về danh sách token
+    if isinstance(processed, list):
+        tokens = processed
+    elif isinstance(processed, str):
+        tokens = segment_text(processed)
+    else:
+        raise TypeError(
+            f"preprocess_data trả về kiểu dữ liệu không hỗ trợ: "
+            f"{type(processed).__name__}"
+        )
+
+    if not tokens:
+        raise ValueError(
+            f"Không tạo được token từ câu: {text!r}"
+        )
+
+    X = sentfeatures(tokens, features)
+    upos = predict(crf, [X])[0]
+
+    if len(tokens) != len(upos):
+        raise ValueError(
+            f"Số token ({len(tokens)}) khác số UPOS ({len(upos)})."
+        )
+
+    return tokens, upos
 
 def parse_dependencies(sentences):
-    """sentences: list[(tokens, upos)] -> list[list[TokenNode]]. Chỉ gọi MaltParser một lần cho cả lô."""
+    """Phân tích phụ thuộc bằng một lần gọi MaltParser cho cả lô."""
     ensure_maltparser()
-    mapping = upos_to_xpos()
-    DATA_DIR.mkdir(exist_ok=True)
-    tmp_in, tmp_out = DATA_DIR / "_tmp_malt_input.conll", DATA_DIR / "_tmp_malt_output.conll"
+
+    # Kiểm tra dữ liệu trước khi ghi file
+    empty_sentences = []
+    for i, (tokens, upos) in enumerate(sentences, start=1):
+        if len(tokens) == 0 or len(upos) == 0:
+            empty_sentences.append(i)
+        elif len(tokens) != len(upos):
+            raise ValueError(
+                f"Câu {i}: số token ({len(tokens)}) "
+                f"khác số UPOS ({len(upos)})."
+            )
+
+    if empty_sentences:
+        raise ValueError(
+            f"Có {len(empty_sentences)} câu không có token hoặc UPOS. "
+            f"Vị trí câu đầu tiên bị lỗi: {empty_sentences[:10]}. "
+            "Kiểm tra dữ liệu đầu vào của tag_sentence()."
+        )
+
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    tmp_in = DATA_DIR / "_tmp_malt_input.conll"
+    tmp_out = DATA_DIR / "_tmp_malt_output.conll"
+
     with tmp_in.open("w", encoding="utf-8", newline="\n") as f:
         for tokens, upos in sentences:
             for i, (tok, up) in enumerate(zip(tokens, upos), start=1):
-                tok = tok.strip().replace("\t", " ") or "_"
-                f.write("\t".join([str(i), tok, tok.lower().replace(" ", "_"), up,
-                                   mapping.get(up, up), "_", "0", "root", "_", "_"]) + "\n")
+                tok = str(tok).strip().replace("\t", " ") or "_"
+                up = str(up).strip()
+
+                f.write("\t".join([
+                    str(i), tok, tok.lower().replace(" ", "_"),
+                    up, up, "_", "0", "root", "_", "_"
+                ]) + "\n")
             f.write("\n")
-    run_script("run_maltparser.py", "--jar", rel(MALT_JAR), "--model", rel(MALT_MODEL),
-               "--input", rel(tmp_in), "--output", rel(tmp_out))
+
+    if tmp_in.stat().st_size == 0:
+        raise RuntimeError("File đầu vào MaltParser rỗng.")
+
+    run_script(
+        "run_maltparser.py",
+        "--jar", rel(MALT_JAR),
+        "--model", rel(MALT_MODEL),
+        "--input", rel(tmp_in),
+        "--output", rel(tmp_out)
+    )
+
+    if not tmp_out.exists() or tmp_out.stat().st_size == 0:
+        raise RuntimeError(
+            "MaltParser không tạo được kết quả. "
+            f"File đầu vào: {tmp_in}, kích thước: {tmp_in.stat().st_size} bytes."
+        )
+
     parsed = read_conll(tmp_out)
+
+    if len(parsed) != len(sentences):
+        raise RuntimeError(
+            f"MaltParser trả {len(parsed)} câu, "
+            f"đầu vào {len(sentences)} câu."
+        )
+
+    result = [
+        [
+            TokenNode(int(r[0]), r[1], int(r[6]), r[7], pos=up)
+            for r, up in zip(rows, upos)
+        ]
+        for rows, (_, upos) in zip(parsed, sentences)
+    ]
+
     tmp_in.unlink(missing_ok=True)
     tmp_out.unlink(missing_ok=True)
-    if len(parsed) != len(sentences):
-        raise RuntimeError(f"MaltParser trả {len(parsed)} câu, đầu vào {len(sentences)} câu.")
-    return [[TokenNode(int(r[0]), r[1], int(r[6]), r[7], pos=up) for r, up in zip(rows, upos)]
-            for rows, (_, upos) in zip(parsed, sentences)]
+
+    return result
+
 
 
 def main(text, crf=None):
@@ -517,21 +550,92 @@ def main(text, crf=None):
     }
 
 
+def create_dataset_test(n=2000):
+    """Tạo dataset_test.json"""
+    df = prepared_df()
+
+    # Tìm cột theo tên thực tế trong DataFrame
+    def find_col(candidates):
+        columns = {str(c).strip().lower(): c for c in df.columns}
+        for name in candidates:
+            if name.lower() in columns:
+                return columns[name.lower()]
+        return None
+
+    sentence_col = find_col(["text"])
+    gold_col = find_col(["Gold_triple"])
+    type_col = find_col(["Type"])
+
+    if sentence_col is None:
+        raise ValueError(
+            f"Không tìm thấy cột câu. Các cột hiện có: {df.columns.tolist()}"
+        )
+
+    if gold_col is None:
+        raise ValueError(
+            f"Không tìm thấy cột Gold Triple. Các cột hiện có: {df.columns.tolist()}"
+        )
+
+    # Chỉ lấy các dòng có câu và Gold Triple
+    valid = df[
+        df[sentence_col].notna()
+        & df[sentence_col].astype(str).str.strip().ne("")
+        & df[gold_col].notna()
+        & df[gold_col].astype(str).str.strip().ne("")].copy()
+
+    # Giữ tối đa n dòng hợp lệ sau khi prepare_df() xử lý
+    selected = valid.head(n)
+
+    dataset = []
+
+    for _, row in selected.iterrows():
+        raw_gold = str(row[gold_col]).strip()
+
+        # Nhiều bộ ba cách nhau bởi ";", mỗi bộ ba dạng S|R|O
+        parts = [
+            [part.strip() for part in chunk.split("|")]
+            for chunk in raw_gold.split(";")
+            if len(chunk.split("|")) == 3
+        ]
+
+        item = {
+            "sentence": str(row[sentence_col]).strip(),
+            "gold_triples": parts
+        }
+
+        if type_col is not None and lib.pd.notna(row[type_col]):
+            item["Type"] = str(row[type_col]).strip()
+        else:
+            item["Type"] = ""
+
+        dataset.append(item)
+
+    output_path = DATA_DIR / "dataset_test.json"
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(dataset, f, ensure_ascii=False, indent=2)
+    print(f"Số dòng sau prepare_df(): {len(df)}")
+    print(f"Số dòng có câu và Gold Triple: {len(valid)}")
+    print(f"Số câu ghi vào JSON: {len(dataset)}")
+    print(f"Đã lưu: {output_path.resolve()}")
+    return dataset
+
+
 def evaluate_triples(crf=None, gold_path=None, match_mode="exact"):
-    """Chạy pipeline trên data/gold_annotated.json (hoặc dataset_test.json) rồi chấm bằng evaluator.py."""
-    crf = crf or load_pos_model()
+    """Chạy pipeline trên data/dataset_test.json rồi chấm bằng evaluator.py."""
+    crf = crf or load_pos_model() #nhận vào mô hình crf
     
+    #tìm file gold
     if gold_path is None:
-        gold_file = DATA_DIR / "gold_annotated.json"
-        if not gold_file.exists():
-            gold_file = DATA_DIR / "dataset_test.json"
+        gold_file = DATA_DIR / "dataset_test.json"
     else:
         gold_file = Path(gold_path)
 
     if not gold_file.exists():
         raise FileNotFoundError(f"Không tìm thấy file dữ liệu gold tại {gold_file}")
 
-    print(f"📖 Đang đọc tập dữ liệu kiểm thử từ: {gold_file}")
+    print(f"Đang đọc tập dữ liệu kiểm thử từ: {gold_file}")
     with gold_file.open(encoding="utf-8") as f:
         dataset = json.load(f)
 
@@ -539,7 +643,7 @@ def evaluate_triples(crf=None, gold_path=None, match_mode="exact"):
     parsed = parse_dependencies(tagged)
     results = [{
         "sentence": item.get("sentence", item.get("text", "")),
-        "type": item.get("type", ""),
+        "type": item.get("Type", item.get("type", "")),
         "gold_triples": item.get("gold_triples", []),
         "predicted_triples": extract_triples_openie(nodes),
     } for item, nodes in zip(dataset, parsed)]
@@ -549,7 +653,37 @@ def evaluate_triples(crf=None, gold_path=None, match_mode="exact"):
     out.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({k: v for k, v in report.items() if k != "error_logs"}, ensure_ascii=False, indent=2))
     print("Đã lưu kết quả tại:", out.resolve())
+    
     return report
+def check_dependency(n_top=15):
+    """Xem Malt sai nhãn nào nhiều nhất và dữ liệu train có bao nhiêu câu non-projective."""
+    from collections import Counter
+    gold = read_conll(DATA_DIR / "test.conll")
+    pred = read_conll(DATA_DIR / "dependency_predictions.conll")
+    tong, dung = Counter(), Counter()
+    las_rut_gon = 0
+    n_token = 0
+    for gs, ps in zip(gold, pred):
+        for g, p in zip(gs, ps):
+            tong[g[7]] += 1
+            n_token += 1
+            if g[6] == p[6] and g[7] == p[7]:
+                dung[g[7]] += 1
+            if g[6] == p[6] and g[7].split(":")[0] == p[7].split(":")[0]:
+                las_rut_gon += 1
+    print("LAS đầy đủ:", round(sum(dung.values()) / n_token, 4),
+          "| LAS khi bỏ phần sau dấu ':':", round(las_rut_gon / n_token, 4))
+    print("Nhãn phổ biến nhất và tỷ lệ đúng (nhãn + head):")
+    for nhan, so_luong in tong.most_common(n_top):
+        print(f"  {nhan:20s} {so_luong:6d}  {dung[nhan] / so_luong:.2f}")
+
+    def khong_projective(rows):
+        cung = [(min(int(r[0]), int(r[6])), max(int(r[0]), int(r[6]))) for r in rows if int(r[6]) != 0]
+        return any(a < c < b < d for a, b in cung for c, d in cung)
+
+    train = read_conll(DATA_DIR / "train.conll")
+    ty_le_khong_projective = sum(khong_projective(s) for s in train) / len(train)
+    print("Số câu train:", len(train), "| tỷ lệ câu non-projective:", round(ty_le_khong_projective, 4))
 
 
 # =====================================================================
@@ -557,12 +691,13 @@ def evaluate_triples(crf=None, gold_path=None, match_mode="exact"):
 # =====================================================================
 def run_all(skip_pos_train=False, retrain_malt=False, demo_text="Chính phủ ban hành quy định mới."):
     print("\n===== [1/4] POS tagging (CRF) =====")
-    crf = load_pos_model() if skip_pos_train else train_pos_model()
+    crf = load_pos_model() if skip_pos_train else crf_analysis()
 
     print("\n===== [2/4] Dependency parsing: csv_to_conll -> train -> prepare -> run -> validate -> evaluate =====")
     run_dependency_pipeline(retrain=retrain_malt)
 
     print("\n===== [3/4] Trích bộ ba + đánh giá trên dataset_test.json =====")
+    create_dataset_test()
     evaluate_triples(crf)
 
     print("\n===== [4/4] Demo một câu =====")
@@ -576,5 +711,9 @@ if __name__ == "__main__":
     ap.add_argument("--skip-pos-train", action="store_true", help="dùng models/pos_crf.pkl, không train lại CRF")
     ap.add_argument("--retrain-malt", action="store_true", help="train lại MaltParser dù đã có vietnamese.mco")
     ap.add_argument("--text", default="Chính phủ ban hành quy định mới.", help="câu demo ở bước cuối")
+    ap.add_argument("--check-dependency", action="store_true", help="xem lỗi nhãn của MaltParser")
     cli = ap.parse_args()
-    run_all(cli.skip_pos_train, cli.retrain_malt, cli.text)
+    if cli.check_dependency:
+        check_dependency()
+    else:
+        run_all(cli.skip_pos_train, cli.retrain_malt, cli.text)

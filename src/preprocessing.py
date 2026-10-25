@@ -43,11 +43,17 @@ def del_duplicate(df, column):
 #xử lý cột rỗng
 #đầu vào là dataframe
 def emptycol(df):
-    empty_idx = df[df.isna().any(axis = 1)].index #được một danh sách gồm các chỉ số của các dòng có ô rỗng
+    # Chỉ kiểm tra các cột bắt buộc cho POS và dependency.
+    # Không xem Gold_triple hoặc type rỗng là lỗi.
+    required_cols = ["text","tokens","upos","head","deprel"]
+    # Chỉ tìm những dòng thiếu dữ liệu ở các cột bắt buộc.
+    check_cols = [col for col in required_cols if col in df.columns]
+    empty_idx = df[df[check_cols].isna().any(axis=1)].index
+
     if not empty_idx.empty:
-        print("Có", len(empty_idx),"dòng có cột rỗng, cần xử lý.")
+        print(f"Có {len(empty_idx)} dòng thiếu dữ liệu ở các cột bắt buộc.")
     else:
-        print("không có dòng nào rỗng")
+        print("Không có dòng nào thiếu dữ liệu ở các cột bắt buộc.")
     return empty_idx
 
 #xóa các dòng có cột rỗng

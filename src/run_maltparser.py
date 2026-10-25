@@ -3,20 +3,24 @@ import argparse
 import subprocess
 from pathlib import Path
 
-
+#đầu vào là file mô hình vietnamese.mco và thông tin pos cần thiết cho dependency parser
 def main():
+    #nhận các tham số đầu vào
     ap = argparse.ArgumentParser()
     ap.add_argument("--jar", required=True, help="Đường dẫn maltparser-1.9.2.jar")
     ap.add_argument("--model", required=True, help="Đường dẫn model .mco đã huấn luyện")
+    #hai file trên là bắt buộc phải có
     ap.add_argument("--input", default="data/malt_input.conll")
     ap.add_argument("--output", default="data/dependency_predictions.conll")
     ap.add_argument("--java", default="java")
     args = ap.parse_args()
 
-    jar = Path(args.jar)
-    model = Path(args.model)
-    source = Path(args.input)
-    target = Path(args.output)
+    #chuyển các đường dẫn thành đối tượng Path
+    jar = Path(args.jar) #File chương trình MAltParser
+    model = Path(args.model) # model đã huấn luyện
+    source = Path(args.input) #source file đầu vào
+    target = Path(args.output)# file đầu ra
+    #kiểm tra tồn tại
     if not jar.exists():
         raise FileNotFoundError(f"Không tìm thấy MaltParser JAR: {jar}")
     if not model.exists():
@@ -47,7 +51,7 @@ def main():
             "MaltParser chạy thất bại. Kiểm tra model, phiên bản Java và định dạng CoNLL."
         )
     print(f"Đã lưu dependency dự đoán: {target.resolve()}")
-
+#trả về dependency_predictions.conll
 
 if __name__ == "__main__":
     main()

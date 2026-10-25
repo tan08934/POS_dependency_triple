@@ -16,7 +16,7 @@ def load_data():
     # upros: từ loại từng token
     # head: từ mà token phụ thuộc vào
     # deprel: quan hệ cú pháp giữa token và head
-    df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel"] ) 
+    df = lib.pd.DataFrame(df, columns = ["text", "tokens", "upos", "head", "deprel","Type","Gold_triple"] ) 
     lib.display(df.columns.tolist())
     return df
 

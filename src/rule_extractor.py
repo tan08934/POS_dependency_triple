@@ -99,93 +99,197 @@ def extract_triples_openie(parsed_sentence: List[TokenNode]) -> List[List[str]]:
     SUBJ_PASSIVE_LABELS = {'nsubj:pass'}
     SUBJ_ACTIVE_LABELS  = {'nsubj', 'nsubj:outer', 'csubj', 'csubj:pass'}
     
-    relation_candidates: List[TokenNode] = []
-    #set ghi nhớ ID của các đtu đã tìm thấy
-    seen_verb_ids: Set[int] = set()
-    
-    for node in parsed_sentence:
-        if node.id in seen_verb_ids:
-            continue
-        #ưu tiên đtu hoặc tính từ vị từ làm root (ADJ + root)
-        is_verb = node.pos == "VERB"
-        is_pred_adj = (node.pos == "ADJ" and node.deprel == "root")
-        
-        if is_verb or is_pred_adj:
-            relation_candidates.append(node)
-            seen_verb_ids.add(node.id)
+ # 1. Tìm các nút có thể đóng vai trò quan hệ R.
+    relation_candidates = [
+        node for node in parsed_sentence
+        if node.pos == "VERB"
+        or (node.pos == "ADJ" and node.deprel == "root")
+    ]
 
-    #duyệt trích xuất bộ 3
+    nominal_pos = {"NOUN", "PROPN", "PRON"}
+
+    # Các nhãn không dùng làm đối số trong quy tắc dự phòng.
+    excluded_arg_labels = {
+        "obj", "iobj",
+        "nsubj", "nsubj:outer", "nsubj:pass",
+        "csubj", "csubj:pass",
+        "obl:tmod", "obl:lmod", "obl:agent",
+        "punct"
+    }
+
+    PASSIVE_INDICATORS = ("bởi", "do", "từ")
+    TIME_LOC_PREPS = ("vào", "lúc", "tại", "ở", "ngày", "năm")
+
     for verb in relation_candidates:
-        #gom cụm
-        rel_str = extract_modifier_phrase(verb.id, parsed_sentence, children_by_head, phrase_type="VERB")
-        
+        # R: lấy động từ cùng các từ bổ trợ của nó.
+        rel_str = extract_modifier_phrase(
+            verb.id,
+            parsed_sentence,
+            children_by_head,
+            phrase_type="VERB"
+        )
+
         subj_str = ""
-        obj_str = ""
+        direct_obj = ""
+        indirect_obj = ""
         agent_str = ""
-        direct_obj = ""    #tân ngữ trực tiếp (obj)
-        indirect_obj = ""  #tân ngữ gián tiếp (iobj)
-        
-        #lấy danh sách con nối với verb
+
+        # Chỉ xét các nút con trực tiếp của động từ.
         children = children_by_head.get(verb.id, [])
-        is_passive = False
-        
+
+        # Xác định bị động trước vòng lặp để không phụ thuộc thứ tự token.
+        is_passive = any(
+            child.deprel in SUBJ_PASSIVE_LABELS
+            for child in children
+        )
+
+        # 2. Tìm S và O theo nhãn dependency.
         for child in children:
-            #nếu nút con có nhãn bị động thì đánh dấu is_passive = True và gom cụm dtu đó lưu vào subj_str
             if child.deprel in SUBJ_PASSIVE_LABELS:
-                is_passive = True
-                subj_str = extract_modifier_phrase(child.id, parsed_sentence, children_by_head, phrase_type="NOUN")
-            
-            #nếu có nhãn chủ động và chưa có subj_str
+                subj_str = extract_modifier_phrase(
+                    child.id, parsed_sentence, children_by_head, "NOUN"
+                )
+
             elif child.deprel in SUBJ_ACTIVE_LABELS and not subj_str:
-                subj_str = extract_modifier_phrase(child.id, parsed_sentence, children_by_head, phrase_type="NOUN")
-                
-            #nếu nút con là tân ngữ trực tiếp (obj) hoặc gián tiếp (iobj) thì gom cụm lưu vào direct_obj hoặc indirect_obj
+                subj_str = extract_modifier_phrase(
+                    child.id, parsed_sentence, children_by_head, "NOUN"
+                )
+
             elif child.deprel == "obj":
-                direct_obj = extract_modifier_phrase(child.id, parsed_sentence, children_by_head, phrase_type="NOUN")
+                direct_obj = extract_modifier_phrase(
+                    child.id, parsed_sentence, children_by_head, "NOUN"
+                )
+
             elif child.deprel == "iobj":
-                indirect_obj = extract_modifier_phrase(child.id, parsed_sentence, children_by_head, phrase_type="NOUN")
-            
-            #xử lý mấy từ liên quan bị động
+                indirect_obj = extract_modifier_phrase(
+                    child.id, parsed_sentence, children_by_head, "NOUN"
+                )
+
             elif child.deprel.startswith("obl"):
-                phrase = extract_modifier_phrase(child.id, parsed_sentence, children_by_head, phrase_type="NOUN")
+                phrase = extract_modifier_phrase(
+                    child.id, parsed_sentence, children_by_head, "NOUN"
+                )
                 phrase_lower = phrase.lower()
-                
-                #tập từ chỉ tác thể bị động
-                PASSIVE_INDICATORS = ("bởi", "do", "từ")
-                
-                #kiểm tra nếu là tác thể bị động (nhãn obl:agent hoặc bắt đầu bằng từ chỉ tác thể)
-                is_agent = child.deprel == "obl:agent" or any(phrase_lower.startswith(prep) for prep in PASSIVE_INDICATORS)
-                
+
+                is_agent = (
+                    child.deprel == "obl:agent"
+                    or any(
+                        phrase_lower.startswith(prep)
+                        for prep in PASSIVE_INDICATORS
+                    )
+                )
+
                 if is_passive and is_agent:
-                    #lược bỏ các từ nối bị động để lấy tác thể sạch (ví dụ: do Công ty A -> Công ty A)
                     clean_agent = phrase
+
                     for prep in PASSIVE_INDICATORS:
                         if clean_agent.lower().startswith(prep):
                             clean_agent = clean_agent[len(prep):].strip()
                             break
-                    agent_str = clean_agent
-                
-                #nếu k phải tác thể thì chỉ lấy làm direct_obj
-                elif child.deprel not in ["obl:tmod", "obl:lmod"] and not direct_obj:
-                    #bỏ qua nếu cụm bắt đầu bằng giới từ chỉ thời gian, địa điểm rõ ràng
-                    TIME_LOC_PREPS = ("vào", "lúc", "tại", "ở", "ngày", "năm")
-                    if not any(phrase_lower.startswith(prep) for prep in TIME_LOC_PREPS):
-                        direct_obj = phrase
 
-        #xử lý logic ngữ nghĩa
+                    agent_str = clean_agent
+
+                elif (
+                    child.deprel not in {"obl:tmod", "obl:lmod"}
+                    and not direct_obj
+                    and not any(
+                        phrase_lower.startswith(prep)
+                        for prep in TIME_LOC_PREPS
+                    )
+                ):
+                    direct_obj = phrase
+
+        # 3. DỰ PHÒNG S cho câu chủ động:
+        # Nếu không tìm được S qua nhãn chuẩn, thử tìm danh từ/đại từ
+        # đứng trước động từ và nối trực tiếp với động từ.
+        if not is_passive and not subj_str:
+            subject_candidates = [
+                child for child in children
+                if child.pos in nominal_pos
+                and child.id < verb.id
+                and child.deprel not in excluded_arg_labels
+            ]
+
+            if subject_candidates:
+                # Chọn danh từ/đại từ gần động từ nhất ở phía trước.
+                subject_node = max(
+                    subject_candidates,
+                    key=lambda node: node.id
+                )
+
+                subj_str = extract_modifier_phrase(
+                    subject_node.id,
+                    parsed_sentence,
+                    children_by_head,
+                    phrase_type="NOUN"
+                )
+        # S kế thừa từ động từ cha khi động từ này là conj/xcomp/advcl/parataxis
+        if not is_passive and not subj_str:
+            ancestor = verb
+            for _ in range(5):
+                if ancestor.deprel not in {"conj", "xcomp", "advcl", "parataxis"}:
+                    break
+                ancestor = next((n for n in parsed_sentence if n.id == ancestor.head), None)
+                if ancestor is None:
+                    break
+                inherited = [c for c in children_by_head.get(ancestor.id, [])
+                             if c.deprel in SUBJ_ACTIVE_LABELS]
+                if inherited:
+                    subj_str = extract_modifier_phrase(
+                        inherited[0].id, parsed_sentence, children_by_head, "NOUN"
+                    )
+                    break
+
+        # 4. DỰ PHÒNG O cho câu chủ động:
+        # Nếu chưa tìm được O, thử tìm danh từ/đại từ đứng sau động từ
+        # và nối trực tiếp với động từ.
+        if not is_passive and not direct_obj and not indirect_obj:
+            object_candidates = sorted(
+                [
+                    child for child in children
+                    if child.pos in nominal_pos
+                    and child.id > verb.id
+                    and child.deprel not in excluded_arg_labels
+                ],
+                key=lambda node: node.id
+            )
+
+            for object_node in object_candidates:
+                candidate_phrase = extract_modifier_phrase(
+                    object_node.id,
+                    parsed_sentence,
+                    children_by_head,
+                    phrase_type="NOUN"
+                )
+
+                if (
+                    candidate_phrase
+                    and not candidate_phrase.lower().startswith(
+                        TIME_LOC_PREPS
+                    )
+                ):
+                    direct_obj = candidate_phrase
+                    break
+
+        # 5. Xác định vai trò cuối cùng, có xử lý câu bị động.
         if is_passive and agent_str:
-            #đảo vai trò câu bị động: tthe -> Subject, thành phần bị tác động -> Object
+            # Câu bị động có tác thể:
+            # tác thể -> S; thành phần bị tác động -> O.
             final_subj = agent_str
             final_obj = subj_str
         else:
             final_subj = subj_str
             final_obj = direct_obj or indirect_obj
 
-        #đóng gói
-        if final_subj and rel_str and final_obj:
-            triple_key = (final_subj.strip(), rel_str.strip(), final_obj.strip())
-            if triple_key not in seen_triples:
-                seen_triples.add(triple_key)
-                predicted_triples.append(list(triple_key))
+        triple_key = (
+            final_subj.strip(),
+            rel_str.strip(),
+            final_obj.strip()
+        )
+
+        # Loại bỏ bộ ba trùng lặp.
+        if triple_key not in seen_triples:
+            seen_triples.add(triple_key)
+            predicted_triples.append(list(triple_key))
 
     return predicted_triples

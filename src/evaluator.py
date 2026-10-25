@@ -1,7 +1,7 @@
 """
 Module: evaluator.py (Đã sửa lỗi logic theo góp ý của nhóm)
 
-Mục đích: Đánh giá chính xác Precision, Recall, F1, Accuracy cho đa bộ ba,
+Mục đích: Đánh giá chính xác Precision, Recall, F1 cho đa bộ ba,
           sửa lỗi tích Đề-các khi tính S/R/O và sửa lỗi log cứng [0].
 """
 
@@ -27,40 +27,114 @@ def normalize_string(text: str) -> str:
     return " ".join(str(text).strip().lower().split())
 
 
-def is_exact_match(gold_triple: List[str], pred_triple: List[str]) -> bool:
-    """So sánh khớp chính xác 100% giữa 2 bộ ba."""
-    if len(gold_triple) != 3 or len(pred_triple) != 3:
+
+def is_exact_match(gold_triple, pred_triple):
+    """So sánh chính xác một triple hoặc danh sách nhiều triple."""
+
+    def normalize_triples(data):
+        if not data:
+            return []
+
+        # Một triple đơn: [S, R, O]
+        if (
+            isinstance(data, (list, tuple))
+            and len(data) == 3
+            and all(not isinstance(x, (list, tuple)) for x in data)
+        ):
+            return [[normalize_string(x) for x in data]]
+
+        # Nhiều triple: [[S1, R1, O1], [S2, R2, O2], ...]
+        if isinstance(data, (list, tuple)):
+            result = []
+            for item in data:
+                if isinstance(item, (list, tuple)):
+                    result.append(
+                        [normalize_string(x) for x in item]
+                    )
+            return result
+
+        return []
+
+    gold = normalize_triples(gold_triple)
+    pred = normalize_triples(pred_triple)
+
+    if len(gold) != len(pred):
         return False
-    return (normalize_string(gold_triple[0]) == normalize_string(pred_triple[0]) and
-            normalize_string(gold_triple[1]) == normalize_string(pred_triple[1]) and
-            normalize_string(gold_triple[2]) == normalize_string(pred_triple[2]))
+
+    # So sánh không phụ thuộc thứ tự các triple
+    unmatched = pred.copy()
+
+    for g in gold:
+        if g not in unmatched:
+            return False
+        unmatched.remove(g)
+
+    return True
 
 
-def is_partial_match(gold_triple: List[str], pred_triple: List[str]) -> bool:
-    """So sánh khớp một phần giữa 2 bộ ba."""
-    if len(gold_triple) != 3 or len(pred_triple) != 3:
+def is_partial_match(gold_triple, pred_triple):
+    """So sánh khớp một phần giữa một triple hoặc nhiều triple."""
+
+    def normalize_triples(data):
+        if not data:
+            return []
+
+        if (
+            isinstance(data, (list, tuple))
+            and len(data) == 3
+            and all(not isinstance(x, (list, tuple)) for x in data)
+        ):
+            return [[normalize_string(x) for x in data]]
+
+        if isinstance(data, (list, tuple)):
+            return [
+                [normalize_string(x) for x in item]
+                for item in data
+                if isinstance(item, (list, tuple))
+            ]
+
+        return []
+
+    gold = normalize_triples(gold_triple)
+    pred = normalize_triples(pred_triple)
+
+    if len(gold) != len(pred):
         return False
-    
-    g_s, g_r, g_o = [normalize_string(x) for x in gold_triple]
-    p_s, p_r, p_o = [normalize_string(x) for x in pred_triple]
 
-    r_match = (g_r in p_r) or (p_r in g_r)
-    s_match = (g_s in p_s) or (p_s in g_s)
-    o_match = (g_o in p_o) or (p_o in g_o)
+    unmatched = pred.copy()
 
-    return r_match and s_match and o_match
+    for g in gold:
+        matched_index = next(
+            (
+                i for i, p in enumerate(unmatched)
+                if len(g) == 3
+                and len(p) == 3
+                and all(
+                    (g[i] in p[i]) or (p[i] in g[i])
+                    for i in range(3)
+                )
+            ),
+            None
+        )
+
+        if matched_index is None:
+            return False
+
+        unmatched.pop(matched_index)
+
+    return True
+
 
 
 def calculate_metrics(tp: int, fp: int, fn: int, total_sentences: int = 0, correct_sentences: int = 0) -> Dict[str, float]:
     """Tính các chỉ số đo đạc chuẩn."""
     total_triples = tp + fp + fn
-    accuracy = (tp / total_triples) if total_triples > 0 else 0.0
+
     precision = (tp / (tp + fp)) if (tp + fp) > 0 else 0.0
     recall = (tp / (tp + fn)) if (tp + fn) > 0 else 0.0
     f1 = (2 * precision * recall / (precision + recall)) if (precision + recall) > 0 else 0.0
 
     res = {
-        "accuracy": round(accuracy * 100, 2),
         "precision": round(precision * 100, 2),
         "recall": round(recall * 100, 2),
         "f1": round(f1 * 100, 2)
