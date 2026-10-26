@@ -112,3 +112,6 @@ py -3.11 src\main.py
   from src.rule_extractor import TokenNode, extract_triples_openie
   
 - Đưa danh sách TokenNode từ dependency parser vào để lấy kết quả
+
+## Hướng dẫn chạy DEMO
+- Trỏ tới thư mục src, chạy lệnh python -m ui.ui_main.py
