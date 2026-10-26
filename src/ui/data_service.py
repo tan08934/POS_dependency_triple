@@ -1,4 +1,5 @@
 import json
+import numpy as np
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
@@ -61,7 +62,24 @@ def delete_selected_triple():
     note_label.configure(
         text=f"Còn lại {len(app_state.current_triples)} bộ ba."
     )
+    
+def tolist_json(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
 
+    if isinstance(obj, np.generic):
+        return obj.item()
+
+    if isinstance(obj, dict):
+        return {
+            key: tolist_json(value)
+            for key, value in obj.items()
+        }
+
+    if isinstance(obj, (list, tuple)):
+        return [tolist_json(item) for item in obj]
+
+    return obj
 
 def export_json():
     if app_state.current_result is None:
@@ -93,6 +111,9 @@ def export_json():
             }
             for triple in app_state.current_triples
         ]
+
+        # Chuyển các kiểu dữ liệu NumPy thành kiểu Python
+        export_data = tolist_json(export_data)
 
         # Ghi dữ liệu ra file JSON
         with open(file_path, "w", encoding="utf-8") as f:
