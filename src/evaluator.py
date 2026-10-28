@@ -167,7 +167,7 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
     error_logs = []
 
     for item in test_results:
-        sent_type = item.get("type", "simple")
+        sent_type = item.get("Type", item.get("type", "simple"))
         if sent_type not in type_stats:
             type_stats[sent_type] = {"tp": 0, "fp": 0, "fn": 0, "total_sent": 0, "correct_sent": 0}
         
@@ -182,6 +182,7 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
 
         matched_gold_indices = set()
         matched_pred_indices = set()
+        matched_pairs = []
 
         # Ghép cặp chính xác giữa Gold và Predicted
         for p_idx, pred in enumerate(pred_list):
@@ -189,11 +190,17 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
                 if g_idx not in matched_gold_indices and match_fn(gold, pred):
                     matched_gold_indices.add(g_idx)
                     matched_pred_indices.add(p_idx)
+                    matched_pairs.append((g_idx, p_idx))
                     break
 
         tp = len(matched_pred_indices)
         fp = len(pred_list) - tp
         fn = len(gold_list) - len(matched_gold_indices)
+        if fp > 0 or fn > 0:
+            print(f"\nCâu: {item.get('sentence', '')}")
+            print(f"Gold triples: {gold_list}")
+            print(f"Predicted triples: {pred_list}")
+            print(f"TP={tp}, FP={fp}, FN={fn}")
 
         overall_tp += tp
         overall_fp += fp
@@ -219,8 +226,7 @@ def evaluate_predictions(test_results: List[Dict[str, Any]], match_mode: str = '
                 "unmatched_pred_count": fp
             })
 
-        # Sửa lỗi tính S / R / O: Chỉ tính trên các cặp đã được ghép 1-1, không lặp Tích Đề-các
-        for g_idx, p_idx in zip(sorted(matched_gold_indices), sorted(matched_pred_indices)):
+        for g_idx, p_idx in matched_pairs:
             g_s, g_r, g_o = gold_list[g_idx]
             p_s, p_r, p_o = pred_list[p_idx]
 

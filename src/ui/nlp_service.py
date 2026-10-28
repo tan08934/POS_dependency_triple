@@ -44,7 +44,7 @@ def run_pipeline(sentence):
 
     try:
         # Gọi pipeline chính của project.
-        from main import main as pipeline_main
+        from ..main import main as pipeline_main
 
         result = pipeline_main(sentence)
 
