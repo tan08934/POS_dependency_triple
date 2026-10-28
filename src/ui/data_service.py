@@ -7,6 +7,18 @@ from .ui_widgets import (
     triple_table, subject_label, relation_label,
     object_label, note_label
 )
+import numpy as np
+
+def json_default(obj):
+    if isinstance(obj, np.ndarray):
+        return obj.tolist()
+
+    if isinstance(obj, np.generic):
+        return obj.item()
+
+    raise TypeError(
+        f"Không thể chuyển kiểu {type(obj).__name__} sang JSON"
+    )
 
 # XÓA BỘ BA ĐANG ĐƯỢC CHỌN
 def delete_selected_triple():
@@ -100,7 +112,8 @@ def export_json():
                 export_data,
                 f,
                 ensure_ascii=False,
-                indent=4
+                indent=4,
+                default = json_default
             )
 
         messagebox.showinfo(

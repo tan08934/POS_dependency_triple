@@ -388,26 +388,47 @@ def ensure_maltparser():
 def run_dependency_pipeline(retrain=False):
     ensure_maltparser()
     jar = rel(MALT_JAR)
+    source_csv = find_udd_csv()
+    train_file = DATA_DIR / "train.conll"
+    test_file = DATA_DIR / "test.conll"
+
 
     # Bước 1: UDD-1.csv -> train.conll, test.conll, input_pos.csv
-    run_script("csv_to_conll.py", "--outdir", "data")
+    model_missing = not MALT_MODEL.exists()
 
-    # Bước 2: huấn luyện MaltParser (bỏ qua nếu đã có model)
-    if retrain or not MALT_MODEL.exists():
-        run_script("train_maltparser.py", "--jar", jar, "--train", "data/train.conll")
+    train_is_newer = (
+        not model_missing
+        and train_file.exists()
+        and train_file.stat().st_mtime > MALT_MODEL.stat().st_mtime
+    )
+    data_changed = (
+    not train_file.exists()
+    or not test_file.exists()
+    or source_csv.stat().st_mtime
+    > min(
+        train_file.stat().st_mtime,
+        test_file.stat().st_mtime
+    )
+    )
+
+    if retrain or data_changed or model_missing or train_is_newer:
+        run_script(
+            "train_maltparser.py",
+            "--jar", jar,
+            "--train", "data/train.conll"
+        )
     else:
-        print(f"Đã có {rel(MALT_MODEL)}, bỏ qua huấn luyện (dùng --retrain-malt để train lại).")
-
+        print("Dữ liệu train không đổi, sử dụng model hiện tại.")
     # Bước 3: Dùng CRF dự đoán POS và tạo đầu vào MaltParser.
     # Nạp CRF vào rồi dùng nó dự đoán pos trên các token của tập test.
-    run_script("prepare_malt_input.py","--test-gold", "data/test.conll","--output", "data/malt_input.conll")
+    run_script("prepare_malt_input.py","--test-gold", "data/test.conll", "--pos-source","crf","--output", "data/malt_input.conll")
     # Bước 4: Dùng MaltParser dự đoán dependency.
     #đọc file ở trên rồi dự đoán
     run_script("run_maltparser.py","--jar", jar,"--model", rel(MALT_MODEL),"--input", "data/malt_input.conll","--output", "data/dependency_predictions.conll")
     # Bước 5: Kiểm tra cấu trúc dependency dự đoán.
     run_script("validate_dependency.py","--input", "data/dependency_predictions.conll")
     # Bước 6: Đánh giá UAS/LAS bằng dependency Gold của tập test.
-    run_script("evaluate_dependency.py","--gold", "data/test.conll","--pred", "data/dependency_predictions.conll")
+    run_script("evaluate_dependency.py","--gold", "data/test.conll","--pred", "data/dependency_predictions.conll", "--output","data/evaluation.json")
 
 
 # =====================================================================

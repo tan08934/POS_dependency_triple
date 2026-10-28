@@ -21,7 +21,7 @@ from main import prepared_df
 
 
 # Những cột này phải chứa danh sách theo từng token của một câu.
-REQUIRED_COLUMNS = ["tokens", "upos", "upos","feats", "head", "deprel"]
+REQUIRED_COLUMNS = ["tokens", "upos","upos","feats", "head", "deprel"]
 
 
 #phải chyển thành python do pandas đọc xong thì các cột có danh sách thật ra đang ở dạng chuỗi rồi
@@ -75,12 +75,12 @@ def parse_list_cell(value):
         return []
 
 
-def conll_block(tokens, upos, feats, heads, deprels):
+def conll_block(tokens, upos,xpos, feats, heads, deprels):
     """Chuyển một câu thành các dòng CoNLL-X gồm đúng 10 cột."""
     lines = []
 
-    for i, (token, up, feat, head, deprel) in enumerate(
-        zip(tokens, upos, feats, heads, deprels), start=1
+    for i, (token, up, up ,feat, head, deprel) in enumerate(
+        zip(tokens, upos,upos, feats, heads, deprels), start=1
     ):
         token = str(token).strip().replace("\t", " ").replace("\n", " ") or "_"
         lemma = token.lower().replace(" ", "_")
@@ -89,8 +89,8 @@ def conll_block(tokens, upos, feats, heads, deprels):
             str(i),                       # 1. ID
             token,                         # 2. FORM
             lemma,                         # 3. LEMMA
-            str(up).strip() or "_",        # 4. CPOSTAG: Gold UPOS
-            str(up).strip() or "_",        # 5. POSTAG: Gold UPOS
+            str(up).strip() or "_",        # 4. UPOS
+            str(up).strip() or "_" ,        # 5. UPOS
             str(feat).strip() or "_",      # 6. FEATS
             str(head),                     # 7. HEAD
             str(deprel).strip() or "_",    # 8. DEPREL
@@ -176,6 +176,7 @@ def write_conll(path, rows, split_name, skipped_rows):
 
             output_file.write(conll_block(
                 sentence["tokens"],
+                sentence["upos"],
                 sentence["upos"],
                 sentence["feats"],
                 sentence["heads"],

@@ -14,6 +14,27 @@ def is_punct(word):
     return True
 #đầu ra là bool, True thì là dấu câu, False thì không phải dấu câu.
 
+#các biến local nhận diện các đặc trưng bổ sung thêm vô
+#các mẫu hình dạng số:
+#số nguyên
+INTEGER_PATTERN = lib.re.compile(r"^[+-]?\d+$")
+#số thập phân
+DECIMAL_PATTERN = lib.re.compile(r"^[+-]?\d+[,.]\d+$")
+#số phân trăm
+PERCENTAGE_PATTERN = lib.re.compile(r"^[+-]?\d+(?:[.,]\d+)*[%‰]$")
+#phân số
+FRACTION_PATTERN = lib.re.compile(r"^\d+/\d+$")
+#giờ giấc
+TIME_PATTERN = lib.re.compile(r"^\d{1,2}:\d{2}(?::\d{2})?$")
+#tiền 
+CURRENCY_PATTERN = lib.re.compile(
+    r"^(?:"
+    r"[₫$€£¥]\s*\d[\d.,]*"
+    r"|"
+    r"\d[\d.,]*\s*(?:đ|Đ|₫|VND|USD|EUR)"
+    r")$",
+    lib.re.IGNORECASE
+)
 #tìm đặc trưng ngữ cảnh và bề mặt
 #hàm đặc trưng này ở phần ngữ cảnh cửa số hiện tại là +-1
 #đầu vào là xét một câu với vị trí của từ trong câu
@@ -30,7 +51,14 @@ def features(sent, i, use_syllables = True, use_affix=True):
             "is_digit": sent[i].isdigit(), #có phải là số hay không
             "is_punct":is_punct(sent[i]), #có phải là dấu câu không
             "length": len(token), #độ dài token
-        }
+            #do lỗi ở nhãn dấu câu và số là đáng kể, thử thêm đặc trưng vào để xem cải thiện kết quả hơn không
+            "is_integer": bool(INTEGER_PATTERN.fullmatch(token)),
+            "is_decimal": bool(DECIMAL_PATTERN.fullmatch(token)),
+            "is_percentage": bool(PERCENTAGE_PATTERN.fullmatch(token)),
+            "is_fraction": bool(FRACTION_PATTERN.fullmatch(token)),
+            "is_time_like": bool(TIME_PATTERN.fullmatch(token)),
+            "is_currency_like": bool(CURRENCY_PATTERN.fullmatch(token))
+            }
     if i > 0: #nếu không phải vị trí đầu câu
         #thêm vào dict key pre.lower
         feats["prev.lower"] = sent[i - 1].lower()

@@ -30,7 +30,7 @@ def write_conll_sentence(out, sent_id, tokens, poses, text=""):
     for i, (token, pos) in enumerate(zip(tokens, poses), start=1):
         token = str(token).strip()
         pos = str(pos).strip() or "_"
-        # CoNLL-X columns: ID FORM LEMMA CPOSTAG POSTAG FEATS HEAD DEPREL PHEAD PDEPREL
+        # CoNLL-X columns: ID FORM LEMMA POSTAG POGTAG FEATS HEAD DEPREL PHEAD PDEPREL
         lemma = token.lower().replace(" ", "_")
         fields = [str(i), token.replace("\t", " "), lemma, pos, pos, "_", "0", "root", "_", "_"]
         out.write("\t".join(fields) + "\n")
@@ -43,6 +43,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", default=None, help="CSV có token và POS nếu dùng chế độ CSV cũ.")
     ap.add_argument("--test-gold", default="data/test.conll", help="Lấy token và ranh giới câu từ tập test.")
+    ap.add_argument("--pos-source",choices=["gold", "crf"],default="gold",help="Nguồn POS đầu vào MaltParser: gold hoặc crf.")
     ap.add_argument("--output", default="data/malt_input.conll")
     args = ap.parse_args()
 
@@ -57,9 +58,19 @@ def main():
         raise FileNotFoundError(
             f"Không tìm thấy tập test: {test_path}"
         )
-
-    # Chỉ đọc token và UPOS Gold từ tập test; file này không dùng CRF.
     sentences = read_conll(test_path)
+    crf = None
+
+    if args.pos_source == "crf":
+        model_path = root_dir / "models" / "pos_crf.pkl"
+
+        if not model_path.is_file():
+            raise FileNotFoundError(
+                f"Không tìm thấy mô hình CRF: {model_path}"
+        )
+
+    crf = joblib.load(model_path)
+    print(f"Đã nạp mô hình CRF: {model_path}")
 
     if not sentences:
         raise ValueError("Tập test không có câu hợp lệ.")
@@ -81,7 +92,11 @@ def main():
             tokens = [row[1] for row in sentence_rows]
 
             # CoNLL-X: cột 4 (index 3) là CPOSTAG/UPOS Gold.
-            poses = [row[3] for row in sentence_rows]
+            if args.pos_source == "gold":
+                poses = [row[3] for row in sentence_rows]
+            else:
+                X = sentfeatures(tokens, features)
+                poses = predict(crf, [X])[0]
             if any(not pos or pos == "_" for pos in poses):
                 raise ValueError(
                     f"Câu {index}: thiếu UPOS Gold trong cột 4 của {test_path}."

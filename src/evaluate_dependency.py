@@ -2,7 +2,23 @@
 import argparse
 from pathlib import Path
 import json
+import unicodedata
 
+def is_punctuation_token(row):
+    # CoNLL-X: FORM ở cột 2, CPOSTAG (UPOS) ở cột 4.
+    form = row[1].strip()
+    upos = row[3].strip().upper()
+
+    # Ưu tiên nhãn UPOS chuẩn.
+    if upos == "PUNCT":
+        return True
+
+    # Dự phòng cho token dấu câu bị gán nhãn POS khác.
+    chars = [ch for ch in form if not ch.isspace()]
+    return bool(chars) and all(
+        unicodedata.category(ch).startswith("P")
+        for ch in chars
+    )
 
 def read_conll(path):
     sentences, current = [], []
@@ -37,7 +53,7 @@ def main():
     if len(gold) != len(pred):
         raise ValueError(f"Số câu không khớp: gold={len(gold)}, pred={len(pred)}")
 
-    total = correct_head = correct_labeled = 0
+    total = correct_head = correct_labeled = punctuation_excluded = 0
     for si, (gs, ps) in enumerate(zip(gold, pred), start=1):
         if len(gs) != len(ps):
             raise ValueError(f"Câu {si}: số token không khớp gold={len(gs)}, pred={len(ps)}")
@@ -46,6 +62,9 @@ def main():
                 raise ValueError(
                     f"Câu {si}: token không khớp: gold={gi[1]!r}, pred={pi[1]!r}"
                 )
+            if is_punctuation_token(gi):
+                punctuation_excluded += 1
+                continue
             total += 1
             same_head = gi[6] == pi[6]
             same_label = gi[7] == pi[7]
