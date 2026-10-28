@@ -181,11 +181,6 @@ input_entry.pack( #để co dãn như mấy lệnh ở trên
     padx=5
 )
 
-input_entry.insert(
-    0,
-    "Nguyễn An mua điện thoại tại Shopee."
-)
-
 #THANH QUY TRÌNH CÁC BƯỚC
 pipeline = tk.Frame(#khung chứa bọc các bước
     content,
